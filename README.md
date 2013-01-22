@@ -1,4 +1,4 @@
-Shmily
+XiaoFan
 ========
 
-Shmily is a Fanfou client for Android
+XiaoFan is a Fanfou client for Android
