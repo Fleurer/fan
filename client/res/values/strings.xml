@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Xiao.Fan</string>
+    <string name="login">Login</string>
+    <string name="home_timeline">HomeTimeLine</string>
+    <string name="mentions">Mentions</string>
+    <string name="dm">DM</string>
+    <string name="public_timeline">PublicTimeLine</string>
+    <string name="share">Share</string>
+    <string name="update">Update</string>
+    <string name="share_status_hint">Say Hello to Fanfou</string>
+    <string name="updating">Updating...</string>
+    <string name="refresh">Refresh</string>
+    <string name="update_success">Update Success</string>
+    <string name="preview_image_des">preview</string>
+    <string name="gallary">Gallary</string>
+    <string name="camera">Camera</string>
+    <string name="error_no_gallary">no gallry</string>
+    <string name="error_no_camera">no camera</string>
+    <string name="error_text_empty">can not send an empty message</string>
+    <string name="error_text_length">please short the length to under 140</string>
+    <string name="upload_a_new_image">uploaded a new image</string>
+    <string name="avatar">avatar</string>
+    <string name="reply">Reply</string>
+    <string name="repost">Repost</string>
+    <string name="favorite">Favorite</string>
+    <string name="delete">Delete</string>
+    <string name="share">Share</string>
+	<string name="save_image_to_disc">Save</string>
+
+    <!--SharePreference KEYS-->
+    <string name="sp_load_count">key_load_count</string>
+</resources>

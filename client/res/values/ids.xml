@@ -1,0 +1,32 @@
+<resources>
+    <item type="id" name="webview" />
+    <item type="id" name="btn_login" />
+    <item type="id" name="listview" />
+    <item type="id" name="viewpager" />
+    <item type="id" name="indicator" />
+    <item type="id" name="avatar" />
+    <item type="id" name="username" />
+    <item type="id" name="id" />
+    <item type="id" name="tv_status" />
+    <item type="id" name="tv_source" />
+    <item type="id" name="progressbar" />
+    <item type="id" name="et_status" />
+    <item type="id" name="v_toolbar" />
+    <item type="id" name="btn_post" />
+    <item type="id" name="image" />
+    <item type="id" name="tv_left" />
+    <item type="id" name="iv_has_location" />
+    <item type="id" name="iv_has_photo" />
+    <item type="id" name="iv_protected" />
+    <item type="id" name="iv_fav" />
+    <item type="id" name="v_right_content" />
+    <item type="id" name="v_userinfo" />
+    <item type="id" name="tv_more" />
+    <item type="id" name="v_reply" />
+    <item type="id" name="tv_reply" />
+    <item type="id" name="fragment" />
+    <item type="id" name="container" />
+    <item type="id" name="content" />
+    <item type="id" name="tv_title" />
+    <item type="id" name="fragment_content" />
+</resources>

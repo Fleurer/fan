@@ -1,0 +1,9 @@
+<resources>
+
+    <string-array name="timeline">
+        <item>@string/home_timeline</item>
+        <item>@string/mentions</item>
+        <item>@string/dm</item>
+        <item>@string/public_timeline</item>
+    </string-array>
+</resources>

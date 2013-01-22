@@ -1,0 +1,8 @@
+<resources>
+    <item type="dimen" name="share_image_preview_width">30dp</item>
+    <item type="dimen" name="share_image_preview_height">30dp</item>
+
+    <dimen name="slidingmenu_offset">60dp</dimen>
+    <dimen name="list_padding">10dp</dimen>
+    <dimen name="shadow_width">15dp</dimen>
+</resources>
