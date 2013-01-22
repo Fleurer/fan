@@ -1,13 +1,12 @@
-package com.googolmo.shmily.app;
+package com.googolmo.fanfou.app;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.Window;
-import com.googolmo.shmily.BaseActivity;
-import com.googolmo.shmily.R;
-import com.googolmo.shmily.fragment.ViewImageFragment;
+import com.googolmo.fanfou.BaseActivity;
+import com.googolmo.fanfou.R;
+import com.googolmo.fanfou.fragment.ViewImageFragment;
 
 /**
  * User: googolmo

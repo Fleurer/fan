@@ -1,4 +1,4 @@
-package com.googolmo.shmily;
+package com.googolmo.fanfou;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,10 +7,8 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.googolmo.fanfouApi.Shmily;
 import com.googolmo.fanfouApi.http.AccessToken;
-import com.googolmo.shmily.app.OAuthActivity;
-import com.googolmo.shmily.data.Provider;
-
-import java.util.List;
+import com.googolmo.fanfou.app.OAuthActivity;
+import com.googolmo.fanfou.data.Provider;
 
 /**
  * User: googolmo

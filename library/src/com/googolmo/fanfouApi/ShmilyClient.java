@@ -22,7 +22,7 @@ public class ShmilyClient extends AsyncHttpClient{
     }
 
     private void init() {
-        setUserAgent("shmily.googolmo.fanfou.api/1.0");
+        setUserAgent("fanfou.googolmo.fanfou.api/1.0");
 
     }
 

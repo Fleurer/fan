@@ -1,4 +1,4 @@
-package com.googolmo.shmily.app;
+package com.googolmo.fanfou.app;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -21,9 +21,9 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.googolmo.fanfouApi.ShmilyException;
 import com.googolmo.fanfouApi.utils.NLog;
-import com.googolmo.shmily.BaseActivity;
-import com.googolmo.shmily.Constants;
-import com.googolmo.shmily.R;
+import com.googolmo.fanfou.BaseActivity;
+import com.googolmo.fanfou.Constants;
+import com.googolmo.fanfou.R;
 import com.googolmo.utils.app.ExternalStorageUtils;
 import com.googolmo.utils.app.IntentUtils;
 import com.googolmo.utils.graphics.BitmapUtils;

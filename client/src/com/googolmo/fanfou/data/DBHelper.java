@@ -1,11 +1,9 @@
-package com.googolmo.shmily.data;
+package com.googolmo.fanfou.data;
 
 import android.content.Context;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import java.util.List;
 
 /**
  * User: googolmo

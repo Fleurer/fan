@@ -1,4 +1,4 @@
-package com.googolmo.shmily.data;
+package com.googolmo.fanfou.data;
 
 import android.content.ContentValues;
 import android.content.Context;

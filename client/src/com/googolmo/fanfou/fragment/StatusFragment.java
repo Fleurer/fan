@@ -1,4 +1,4 @@
-package com.googolmo.shmily.fragment;
+package com.googolmo.fanfou.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,10 +16,10 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.googolmo.fanfouApi.module.Status;
-import com.googolmo.shmily.Constants;
-import com.googolmo.shmily.R;
-import com.googolmo.shmily.app.ShareActivity;
-import com.googolmo.shmily.app.ViewImageActivity;
+import com.googolmo.fanfou.Constants;
+import com.googolmo.fanfou.R;
+import com.googolmo.fanfou.app.ShareActivity;
+import com.googolmo.fanfou.app.ViewImageActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import org.json.JSONException;

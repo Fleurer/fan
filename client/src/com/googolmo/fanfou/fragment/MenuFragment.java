@@ -1,4 +1,4 @@
-package com.googolmo.shmily.fragment;
+package com.googolmo.fanfou.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,10 +9,10 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.googolmo.fanfouApi.utils.NLog;
-import com.googolmo.shmily.Constants;
-import com.googolmo.shmily.MainActivity;
-import com.googolmo.shmily.R;
-import com.googolmo.shmily.module.MenuModule;
+import com.googolmo.fanfou.Constants;
+import com.googolmo.fanfou.MainActivity;
+import com.googolmo.fanfou.R;
+import com.googolmo.fanfou.module.MenuModule;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.googolmo.shmily.adapter;
+package com.googolmo.fanfou.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
 
 import java.util.ArrayList;

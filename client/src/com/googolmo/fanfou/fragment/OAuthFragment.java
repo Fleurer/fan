@@ -1,4 +1,4 @@
-package com.googolmo.shmily.fragment;
+package com.googolmo.fanfou.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,9 +13,9 @@ import com.googolmo.fanfouApi.http.AccessToken;
 import com.googolmo.fanfouApi.http.RequestToken;
 import com.googolmo.fanfouApi.module.User;
 import com.googolmo.fanfouApi.utils.NLog;
-import com.googolmo.shmily.Constants;
-import com.googolmo.shmily.MainActivity;
-import com.googolmo.shmily.R;
+import com.googolmo.fanfou.Constants;
+import com.googolmo.fanfou.MainActivity;
+import com.googolmo.fanfou.R;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import org.json.JSONObject;

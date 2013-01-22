@@ -1,4 +1,4 @@
-package com.googolmo.shmily.fragment;
+package com.googolmo.fanfou.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -6,9 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.googolmo.fanfouApi.Shmily;
-import com.googolmo.shmily.BaseApplication;
-import com.googolmo.shmily.data.Provider;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.googolmo.fanfou.BaseApplication;
+import com.googolmo.fanfou.data.Provider;
 
 /**
  * User: googolmo

@@ -1,4 +1,4 @@
-package com.googolmo.shmily;
+package com.googolmo.fanfou;
 
 
 import android.content.Context;
@@ -11,11 +11,11 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.googolmo.fanfouApi.http.AccessToken;
-import com.googolmo.shmily.app.OAuthActivity;
-import com.googolmo.shmily.data.Provider;
-import com.googolmo.shmily.fragment.MenuFragment;
-import com.googolmo.shmily.fragment.TimeLineFragment;
-import com.googolmo.shmily.module.MenuModule;
+import com.googolmo.fanfou.app.OAuthActivity;
+import com.googolmo.fanfou.data.Provider;
+import com.googolmo.fanfou.fragment.MenuFragment;
+import com.googolmo.fanfou.fragment.TimeLineFragment;
+import com.googolmo.fanfou.module.MenuModule;
 import com.slidingmenu.lib.SlidingMenu;
 import com.slidingmenu.lib.app.SlidingFragmentActivity;
 

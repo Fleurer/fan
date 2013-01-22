@@ -1,4 +1,4 @@
-package com.googolmo.shmily.module;
+package com.googolmo.fanfou.module;
 
 import android.os.Bundle;
 

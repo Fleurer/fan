@@ -1,4 +1,4 @@
-package com.googolmo.shmily.data;
+package com.googolmo.fanfou.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -6,7 +6,7 @@ import android.preference.PreferenceManager;
 import com.googolmo.fanfouApi.http.AccessToken;
 import com.googolmo.fanfouApi.module.User;
 import com.googolmo.fanfouApi.utils.NLog;
-import com.googolmo.shmily.R;
+import com.googolmo.fanfou.R;
 
 /**
  * User: googolmo

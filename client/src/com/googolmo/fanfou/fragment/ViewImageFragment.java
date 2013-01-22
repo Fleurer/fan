@@ -1,4 +1,4 @@
-package com.googolmo.shmily.fragment;
+package com.googolmo.fanfou.fragment;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,8 +17,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.googolmo.fanfouApi.utils.NLog;
-import com.googolmo.shmily.Constants;
-import com.googolmo.shmily.R;
+import com.googolmo.fanfou.Constants;
+import com.googolmo.fanfou.R;
 import com.googolmo.utils.app.DateUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;

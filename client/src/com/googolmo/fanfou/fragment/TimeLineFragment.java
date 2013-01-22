@@ -1,7 +1,6 @@
-package com.googolmo.shmily.fragment;
+package com.googolmo.fanfou.fragment;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,11 +22,11 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.googolmo.fanfouApi.module.Status;
 import com.googolmo.fanfouApi.utils.NLog;
-import com.googolmo.shmily.Constants;
-import com.googolmo.shmily.R;
-import com.googolmo.shmily.app.ShareActivity;
-import com.googolmo.shmily.app.StatusActivity;
-import com.googolmo.shmily.data.DB;
+import com.googolmo.fanfou.Constants;
+import com.googolmo.fanfou.R;
+import com.googolmo.fanfou.app.ShareActivity;
+import com.googolmo.fanfou.app.StatusActivity;
+import com.googolmo.fanfou.data.DB;
 import com.googolmo.utils.app.DateUtils;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;

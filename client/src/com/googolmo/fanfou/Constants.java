@@ -1,4 +1,4 @@
-package com.googolmo.shmily;
+package com.googolmo.fanfou;
 
 /**
  * User: googolmo
@@ -6,15 +6,15 @@ package com.googolmo.shmily;
  * Time: 下午2:03
  */
 public class Constants {
-    public static final String TAG = "Shmily";
+    public static final String TAG = "FanMo";
     public static final String CONSUMER_KEY = "d0cdaf18beb2156f8b41fdc02be86170";
     public static final String CONSUMER_SECRET = "d9d35304d9863609d9d22a4d693b0c8d";
 
-    public static final String CALLBACK_URL= "shmily://callback_url";
+    public static final String CALLBACK_URL= "mofan://callback_url";
 
     public static final boolean DEBUG = true;
 
-    public static final String KEY_HOME_TAB_MODE = "com.googolmo.shmily.homemode";
+    public static final String KEY_HOME_TAB_MODE = "com.googolmo.fanfou.homemode";
 
 	public static final String KEY_URL = "url";
 

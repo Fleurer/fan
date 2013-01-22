@@ -1,17 +1,16 @@
-package com.googolmo.shmily;
+package com.googolmo.fanfou;
 
 
 import android.app.Application;
 import com.googolmo.fanfouApi.Shmily;
 import com.googolmo.fanfouApi.utils.NLog;
-import com.googolmo.shmily.data.Provider;
+import com.googolmo.fanfou.data.Provider;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.download.URLConnectionImageDownloader;
 
 public class BaseApplication extends Application {
 
