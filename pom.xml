@@ -46,6 +46,13 @@
             </releases>
         </repository>
         <repository>
+            <id>openshift_repo</id>
+            <url>https://mo-googol.rhcloud.com/nexus/content/repositories/r/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
             <id>googomo-snapshots</id>
             <url>https://raw.github.com/googolmo/mvnrep/master/snapshots</url>
             <snapshots>
