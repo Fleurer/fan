@@ -1,6 +1,7 @@
 #!/bin/bash
 mvn -Phome clean package
-VERSION_NAME=`grep versionName AndroidManifest.xml |sed 's/.*android:versionName="\([^"]*\)".*/\1/'`
+#VERSION_NAME=`grep versionName AndroidManifest.xml |sed 's/.*android:versionName="\([^"]*\)".*/\1/'`
+VERSION_NAME=`grep -E -m 1 -o "<version>(.*)</version>" pom.xml | sed -e 's,.*<version>\([^<]*\)</version>.*,\1,g'`
 APK_PREFIX=`grep -E -m 1 -o "<apk.prefix>(.*)</apk.prefix>" pom.xml | sed -e 's,.*<apk.prefix>\([^<]*\)</apk.prefix>.*,\1,g'`
 PACKAGE=`grep -E -m 1 -o "<groupId>(.*)</groupId>" pom.xml | sed -e 's,.*<groupId>\([^<]*\)</groupId>.*,\1,g'`
 echo $VERSION_NAME
