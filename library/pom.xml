@@ -7,7 +7,6 @@
 		<groupId>com.googolmo.fanfou</groupId>
 		<artifactId>fanxiao</artifactId>
 		<version>1.0.0</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>com.googolmo.fanfouApi</groupId>
@@ -89,7 +88,7 @@
                             <artifacts>
                                 <artifact>
                                     <type>jar</type>
-                                    <file>${project.build.directory}/${parent.groupId}-${project.build.finalName}.jar</file>
+                                    <file>${project.build.directory}/${project.parent.groupId}-${project.build.finalName}.jar</file>
                                 </artifact>
                             </artifacts>
                         </configuration>

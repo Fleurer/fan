@@ -62,11 +62,11 @@
     <repositories>
         <repository>
             <id>googolmo-repo</id>
-            <url>https://github.com/googolmo/mvnrep/raw/master/release</url>
+            <url>https://raw.github.com/googolmo/mvnrep/master/release</url>
         </repository>
         <repository>
             <id>googomo-snapshots</id>
-            <url>https://github.com/googolmo/mvnrep/raw/master/snapshots</url>
+            <url>https://raw.github.com/googolmo/mvnrep/master/snapshots</url>
         </repository>
     </repositories>
 
