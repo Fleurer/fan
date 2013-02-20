@@ -1,3 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="Theme.Light" parent="Theme.Light.A">
+
+    </style>
+
+    <style name="Theme.Dark" parent="Theme.Dark.A">
+
+    </style>
+
 </resources>
