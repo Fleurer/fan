@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import com.googolmo.fanfou.api.http.AccessToken;
+import com.googolmo.fanfou.api.http.Token;
 import com.googolmo.fanfou.api.module.User;
 import com.googolmo.fanfou.utils.NLog;
 import com.googolmo.fanfou.R;
@@ -24,11 +25,11 @@ public class Provider {
         db = new DB(context);
     }
 
-//    public void setToken(Token token) {
-//        setToken(token, getCurrentUserId());
-//    }
+    public void setToken(Token token) {
+        setToken(token, getCurrentUserId());
+    }
 
-    public void setToken(AccessToken token, String userId) {
+    public void setToken(Token token, String userId) {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(userId + "_token", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("at", token.getToken());
@@ -44,6 +45,9 @@ public class Provider {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(userId + "_token", Context.MODE_PRIVATE);
         AccessToken token = new AccessToken(sharedPreferences.getString("at", ""),
                 sharedPreferences.getString("ats", ""));
+        if (token.getToken().equals("")) {
+            return null;
+        }
         return token;
     }
 

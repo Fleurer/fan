@@ -19,7 +19,7 @@ import com.actionbarsherlock.ActionBarSherlock;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.googolmo.fanfou.api.ShmilyException;
+import com.googolmo.fanfou.api.FanfouException;
 import com.googolmo.fanfou.utils.NLog;
 import com.googolmo.fanfou.BaseActivity;
 import com.googolmo.fanfou.Constants;
@@ -394,7 +394,7 @@ public class ShareActivity extends BaseActivity{
             e.printStackTrace();
             NLog.e(TAG, errorResponse.toString());
             if (errorResponse != null) {
-                ShmilyException ex = new ShmilyException(errorResponse);
+                FanfouException ex = new FanfouException(errorResponse);
                 Toast.makeText(ShareActivity.this, ex.getError(), Toast.LENGTH_LONG).show();
             }
 
@@ -405,7 +405,7 @@ public class ShareActivity extends BaseActivity{
         public void onFailure(Throwable error, String content) {
             super.onFailure(error, content);
             NLog.e(TAG, content);
-            ShmilyException ex = new ShmilyException(error);
+            FanfouException ex = new FanfouException(error);
             Toast.makeText(ShareActivity.this, ex.getError(), Toast.LENGTH_LONG).show();
         }
 

@@ -1,5 +1,6 @@
 package com.googolmo.fanfou.api;
 
+import com.googolmo.fanfou.api.http.Response;
 import org.apache.http.client.HttpResponseException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,21 +10,22 @@ import org.json.JSONObject;
  * Date: 12-9-7
  * Time: 下午11:20
  */
-public class ShmilyException extends Exception {
+public class FanfouException extends Exception {
 
 
     private JSONObject json;
     private String request;
     private String error;
+    private String status;
 
-    public ShmilyException(final JSONObject json) {
+    public FanfouException(final JSONObject json) {
         this.json = json;
         this.request = this.json.optString("request", "");
         this.error = this.json.optString("error", "");
 
     }
 
-    public ShmilyException(Throwable e) {
+    public FanfouException(Throwable e) {
         if (e instanceof HttpResponseException) {
             switch (((HttpResponseException)e).getStatusCode()) {
                 case 500:
@@ -45,7 +47,13 @@ public class ShmilyException extends Exception {
         }
     }
 
-    public ShmilyException (String request, String error) {
+    public FanfouException(String request, String error) {
+        this.request = request;
+        this.error = error;
+        this.json = null;
+    }
+
+    public FanfouException(Response response) {
         this.request = request;
         this.error = error;
         this.json = null;

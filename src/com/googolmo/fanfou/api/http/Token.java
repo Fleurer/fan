@@ -1,25 +1,30 @@
+/*
+ * Copyright (c) 2013. By @GoogolMo
+ */
+
 package com.googolmo.fanfou.api.http;
 
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * User: googolmo
- * Date: 12-9-8
- * Time: 上午8:48
+ * User: GoogolMo
+ * Date: 13-3-6
+ * Time: 下午9:41
  */
-public class OAuthToken {
+public class Token {
+
     private String token;
     private String tokenSecret;
 
     private transient SecretKeySpec secretKeySpec;
     String[] responseStr = null;
 
-    public OAuthToken(String token, String tokenSecret) {
+    public Token(String token, String tokenSecret) {
         this.token = token;
         this.tokenSecret = tokenSecret;
     }
 
-    public OAuthToken(String string) {
+    public Token(String string) {
         responseStr = string.split("&");
         tokenSecret = getParameter("oauth_token_secret");
         token = getParameter("oauth_token");
@@ -55,16 +60,12 @@ public class OAuthToken {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OAuthToken)) return false;
+        if (!(o instanceof Token)) return false;
 
-        OAuthToken that = (OAuthToken) o;
+        Token that = (Token) o;
 
-        if (secretKeySpec != null ? !secretKeySpec.equals(that.secretKeySpec) : that.secretKeySpec != null)
-            return false;
-        if (!token.equals(that.token)) return false;
-        if (!tokenSecret.equals(that.tokenSecret)) return false;
+        return !(secretKeySpec != null ? !secretKeySpec.equals(that.secretKeySpec) : that.secretKeySpec != null) && token.equals(that.token) && tokenSecret.equals(that.tokenSecret);
 
-        return true;
     }
 
     @Override

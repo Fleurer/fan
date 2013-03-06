@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
-import com.googolmo.fanfou.api.Shmily;
+import com.googolmo.fanfou.api.Api;
 import com.googolmo.fanfou.api.http.AccessToken;
 import com.googolmo.fanfou.app.OAuthActivity;
 import com.googolmo.fanfou.data.Provider;
@@ -17,7 +17,7 @@ import com.googolmo.fanfou.data.Provider;
  */
 public class BaseActivity extends SherlockFragmentActivity{
 
-    protected Shmily mApi;
+    protected Api mApi;
     protected Provider mProvider;
 
     @Override
@@ -28,16 +28,16 @@ public class BaseActivity extends SherlockFragmentActivity{
 
 		if (this.mProvider.getCurrentUser() != null && !this.mProvider.getCurrentUserId().equals("")) {
 			AccessToken accessToken = mProvider.getToken(mProvider.getCurrentUserId());
-			if (accessToken == null || accessToken.getToken().equals("") || accessToken.getTokenSecret().equals("")) {
+			if (accessToken == null) {
 				startLogin(this);
 			}
-			((BaseApplication) getApplication()).getApi().setOAuthToken(accessToken);
+			this.mApi.setOAuthToken(accessToken);
 		} else {
 			startLogin(this);
 		}
     }
 
-    public Shmily getApi() {
+    public Api getApi() {
         return this.mApi;
     }
 

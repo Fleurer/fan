@@ -2,6 +2,7 @@ package com.googolmo.fanfou.api.http;
 
 
 import com.googolmo.fanfou.utils.Utils;
+import org.apache.http.NameValuePair;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -13,7 +14,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * User: googolmo
@@ -31,8 +31,8 @@ public class OAuth {
 
     public String getOAuthSignature(String httpMethod,
                                     String url,
-                                    Params params,
-                                    OAuthToken token) {
+                                    List<NameValuePair> params,
+                                    Token token) {
 
         long timestamp = System.currentTimeMillis() / 1000;
         long nonce = timestamp + Utils.getRandom();
@@ -42,13 +42,13 @@ public class OAuth {
     }
 
     public String getOAuthSignature(String httpMethod,
-                                           String url,
-                                           Params params,
-                                           String timestamp,
-                                           String nonce,
-                                           OAuthToken token) {
+                                    String url,
+                                    List<NameValuePair> params,
+                                    String timestamp,
+                                    String nonce,
+                                    Token token) {
         if (params == null) {
-            params = new Params();
+            params = new ArrayList<NameValuePair>();
         }
 
         List<Parameter> oauthHeaderParams = new ArrayList<Parameter>();
@@ -60,7 +60,7 @@ public class OAuth {
         if (token != null) {
             oauthHeaderParams.add(new Parameter("oauth_token", token.getToken()));
         }
-        List<Parameter> signBaseParams = new ArrayList<Parameter>(oauthHeaderParams.size() + params.entrySet().size());
+        List<Parameter> signBaseParams = new ArrayList<Parameter>(oauthHeaderParams.size() + params.size());
         signBaseParams.addAll(oauthHeaderParams);
         signBaseParams.addAll(toParamList(params));
         parseGetParameters(url, signBaseParams);
@@ -105,7 +105,7 @@ public class OAuth {
      * @return signature
      * @see <a href="http://oauth.net/core/1.0/#rfc.section.9.2.1">OAuth Core - 9.2.1.  Generating Signature</a>
      */
-    /*package*/ String generateSignature(String data, OAuthToken token) {
+    /*package*/ String generateSignature(String data, Token token) {
         byte[] byteHMAC = null;
         try {
             Mac mac = Mac.getInstance("HmacSHA1");
@@ -131,14 +131,12 @@ public class OAuth {
         return BASE64Encoder.encode(byteHMAC);
     }
 
-
-    public List<Parameter> toParamList(Params params) {
-        List<Parameter> paramList = new ArrayList<Parameter>(params.entrySet().size());
-        for(ConcurrentHashMap.Entry<String, String> entry : params.entrySet()) {
-            paramList.add(new Parameter(entry.getKey(), entry.getValue()));
+    public List<Parameter> toParamList(List<NameValuePair> params) {
+        List<Parameter> parameters = new ArrayList<Parameter>(params.size());
+        for (NameValuePair pair : params) {
+            parameters.add(new Parameter(pair.getName(), pair.getValue()));
         }
-        return paramList;
-
+        return parameters;
     }
 
     public String normalizeRequestParameters(List<Parameter> params) {

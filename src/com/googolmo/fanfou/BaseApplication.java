@@ -2,6 +2,7 @@ package com.googolmo.fanfou;
 
 
 import android.app.Application;
+import com.googolmo.fanfou.api.Api;
 import com.googolmo.fanfou.api.Shmily;
 import com.googolmo.fanfou.utils.NLog;
 import com.googolmo.fanfou.data.Provider;
@@ -13,11 +14,13 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 public class BaseApplication extends Application {
+    private static final String TAG = BaseApplication.class.getName();
 
-    private Shmily mApi;
+//    private Shmily mApi;
+    private Api mApi;
     private Provider mProvider;
 
-    public Shmily getApi() {
+    public Api getApi() {
         return mApi;
     }
 
@@ -31,7 +34,7 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         NLog.setDebug(Constants.DEBUG);
-        this.mApi = new Shmily(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
+        this.mApi = new Api(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
         this.mProvider = new Provider(this);
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
@@ -55,5 +58,12 @@ public class BaseApplication extends Application {
 
     public BaseApplication() {
         super();
+    }
+
+    @Override
+    public void onTerminate() {
+        NLog.i(TAG, "onTerminate");
+        super.onTerminate();
+
     }
 }

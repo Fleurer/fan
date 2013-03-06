@@ -2,6 +2,7 @@ package com.googolmo.fanfou.api.module;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.google.gson.annotations.Expose;
 import org.json.JSONObject;
 
 /**
@@ -10,54 +11,86 @@ import org.json.JSONObject;
  * Time: 下午10:48
  */
 public class Status implements Parcelable{
-    private String jsonString;
-    private String created_at;
-    private String id;
-    private int rwaid;
-    private String text;
-    private String source;
-    private boolean truncated;
-    private String in_reply_to_status_id;
-    private String in_reply_to_user_id;
-    private String in_reply_to_screen_name;
-    private String repost_status_id;
-    private Status repost_status;
-    private String repost_user_id;
-    private String repost_screen_name;
-    private boolean favorited;
-    private String location;
-    private User user;
-    private Photo photo;
+
+    @Expose private String created_at;
+    @Expose private String id;
+    @Expose private String text;
+    @Expose private String source;
+    @Expose private String location;
+    @Expose private String in_reply_to_status_id;
+    @Expose private String in_reply_to_user_id;
+    @Expose private String in_reply_to_screen_name;
+    @Expose private String repost_status_id;
+    @Expose private String repost_user_id;
+    @Expose private String repost_screen_name;
+    @Expose private int rawid;
+    @Expose private boolean favorited;
+    @Expose private boolean truncated;
+    @Expose private User user;
+    @Expose private Photo photo;
+    @Expose private Status repost_status;
 
     public Status() {
     }
 
-    public Status(JSONObject status) {
-        this.jsonString = status.toString();
-        this.created_at = status.optString("created_at");
-        this.id = status.optString("id");
-        this.rwaid = status.optInt("rawid", 0);
-        this.text = status.optString("text");
-        this.source = status.optString("source");
-        this.truncated = status.optBoolean("truncated", false);
-        this.in_reply_to_screen_name = status.optString("in_reply_to_screen_name");
-        this.in_reply_to_status_id = status.optString("in_reply_to_status_id");
-        this.in_reply_to_user_id = status.optString("in_reply_to_user_id");
-        this.favorited = status.optBoolean("favorited");
-        this.location = status.optString("location");
-        JSONObject userJson = status.optJSONObject("user");
-        if (userJson != null && userJson.length() > 0) {
-            this.user = new User(userJson);
-        }
-        JSONObject photoJson = status.optJSONObject("photo");
-        if (photoJson != null && photoJson.length() > 0) {
-            this.photo = new Photo(photoJson);
-        }
-        JSONObject repostJson = status.optJSONObject("repost_status");
-        if (repostJson != null && repostJson.length() > 0) {
-            this.repost_status = new Status(repostJson);
-        }
+    private Status(Parcel in) {
+        String[] s = new String[11];
+        in.readStringArray(s);
+        this.created_at = s[0];
+        this.id = s[1];
+        this.text = s[2];
+        this.source = s[3];
+        this.location = s[4];
+        this.in_reply_to_status_id = s[5];
+        this.in_reply_to_user_id = s[6];
+        this.in_reply_to_screen_name = s[7];
+        this.repost_status_id = s[8];
+        this.repost_user_id = s[9];
+        this.repost_screen_name = s[10];
+
+        this.rawid = in.readInt();
+
+        boolean[] b = new boolean[2];
+        this.favorited = b[0];
+        this.truncated = b[1];
+
+        this.user = in.readParcelable(User.class.getClassLoader());
+        this.photo = in.readParcelable(Photo.class.getClassLoader());
+        this.repost_status = in.readParcelable(Status.class.getClassLoader());
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeStringArray(new String[]{created_at, id, text, source, location
+                , in_reply_to_status_id, in_reply_to_user_id, in_reply_to_screen_name
+                , repost_status_id, repost_user_id, repost_screen_name});
+        out.writeInt(rawid);
+        out.writeBooleanArray(new boolean[]{favorited, truncated});
+        out.writeParcelable(user, flags);
+        out.writeParcelable(photo, flags);
+        out.writeParcelable(repost_status, flags);
+
+    }
+
+    public static final Creator<Status> CREATOR
+            = new Creator<Status>() {
+        @Override
+        public Status createFromParcel(Parcel source) {
+            return new Status(source);
+        }
+
+        @Override
+        public Status[] newArray(int size) {
+            return new Status[size];
+        }
+    };
+
+
 
     public String getCreated_at() {
         return created_at;
@@ -75,12 +108,12 @@ public class Status implements Parcelable{
         this.id = id;
     }
 
-    public int getRwaid() {
-        return rwaid;
+    public int getRawid() {
+        return rawid;
     }
 
-    public void setRwaid(int rwaid) {
-        this.rwaid = rwaid;
+    public void setRawid(int rawid) {
+        this.rawid = rawid;
     }
 
     public String getText() {
@@ -196,65 +229,25 @@ public class Status implements Parcelable{
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Status status = (Status) o;
-
-        if (!id.equals(status.id)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return id.hashCode();
-    }
-
-    @Override
     public String toString() {
-        return "Status [created_at=" + created_at + ", id=" + id + ", text="
-                + text + ", source=" + source + ", truncated=" + truncated
-                + ", in_reply_to_status_id=" + in_reply_to_status_id
-                + ", in_reply_to_user_id=" + in_reply_to_user_id
-                + ", favorited=" + favorited + ", in_reply_to_screen_name="
-                + in_reply_to_screen_name + ", location=" + location
-                + ", photo_url=" + photo + ", user=" + user + "]";
-    }
-
-    public String getJsonString() {
-        return this.jsonString;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel out, int flags) {
-        out.writeString(created_at);
-        out.writeString(id);
-        out.writeString(text);
-        out.writeString(source);
-    }
-
-    public static final Creator<Status> CREATOR
-            = new Creator<Status>() {
-        @Override
-        public Status createFromParcel(Parcel source) {
-            return new Status(source);
-        }
-
-        @Override
-        public Status[] newArray(int size) {
-            return new Status[0];
-        }
-    };
-
-    private Status(Parcel in) {
-
-
+        return "Status{" +
+                "created_at='" + created_at + '\'' +
+                ", id='" + id + '\'' +
+                ", text='" + text + '\'' +
+                ", source='" + source + '\'' +
+                ", in_reply_to_status_id='" + in_reply_to_status_id + '\'' +
+                ", in_reply_to_user_id='" + in_reply_to_user_id + '\'' +
+                ", in_reply_to_screen_name='" + in_reply_to_screen_name + '\'' +
+                ", repost_status_id='" + repost_status_id + '\'' +
+                ", repost_status=" + repost_status +
+                ", repost_user_id='" + repost_user_id + '\'' +
+                ", repost_screen_name='" + repost_screen_name + '\'' +
+                ", rawid=" + rawid +
+                ", favorited=" + favorited +
+                ", truncated=" + truncated +
+                ", location='" + location + '\'' +
+                ", user=" + user +
+                ", photo=" + photo +
+                '}';
     }
 }

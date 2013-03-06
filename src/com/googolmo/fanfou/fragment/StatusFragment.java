@@ -84,7 +84,7 @@ public class StatusFragment extends BaseFragment implements ActionBarSherlock.On
         String s = getArguments().getString(Constants.KEY_STATUS, "");
         if (s != null && !s.equals("")) {
             try {
-                mStatus = new Status(new JSONObject(s));
+//                mStatus = new Status(new JSONObject(s));
             } catch (JSONException e) {
                 e.printStackTrace();
                 mStatus = null;

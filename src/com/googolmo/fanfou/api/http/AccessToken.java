@@ -5,7 +5,7 @@ package com.googolmo.fanfou.api.http;
  * Date: 12-9-8
  * Time: 下午1:43
  */
-public class AccessToken extends OAuthToken{
+public class AccessToken extends Token{
 
     private String screenName;
     private String userId;

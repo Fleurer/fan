@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.actionbarsherlock.app.SherlockFragment;
-import com.googolmo.fanfou.api.Shmily;
+import com.googolmo.fanfou.api.Api;
 import com.googolmo.fanfou.BaseApplication;
 import com.googolmo.fanfou.data.Provider;
 
@@ -15,7 +15,7 @@ import com.googolmo.fanfou.data.Provider;
  * Time: 下午6:46
  */
 public class BaseFragment extends SherlockFragment{
-    protected Shmily mApi;
+    protected Api mApi;
     protected Provider mProvider;
 
     @Override
@@ -30,7 +30,7 @@ public class BaseFragment extends SherlockFragment{
         this.mProvider = ((BaseApplication) getSherlockActivity().getApplication()).getProvider();
     }
 
-    public Shmily getApi() {
+    public Api getApi() {
         return this.mApi;
     }
 

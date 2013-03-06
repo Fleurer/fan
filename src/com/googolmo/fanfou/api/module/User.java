@@ -1,68 +1,104 @@
 package com.googolmo.fanfou.api.module;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import com.google.gson.annotations.Expose;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: googolmo
  * Date: 12-9-7
  * Time: 下午10:48
  */
-public class User{
+public class User implements Parcelable{
 
-    private String jsonString;
-
-    private String id;
-    private String name;
-    private String screen_name;
-    private String location;
-    private String gender;
-    private String birthday;
-    private String description;
-    private String profile_image_url;
-    private String profile_image_url_large;
-    private String url;
-    private boolean isProtected;
-    private int followers_count;
-    private int friends_count;
-    private int favourites_count;
-    private int statuses_count;
-    private boolean following;
-    private boolean notifications;
-    private String created_at;
-    private int utc_offset;
-    private Status status;
+    @Expose private String id;
+    @Expose private String name;
+    @Expose private String screen_name;
+    @Expose private String location;
+    @Expose private String gender;
+    @Expose private String birthday;
+    @Expose private String description;
+    @Expose private String profile_image_url;
+    @Expose private String profile_image_url_large;
+    @Expose private String url;
+    @Expose private String created_at;
+    @Expose private int followers_count;
+    @Expose private int friends_count;
+    @Expose private int favourites_count;
+    @Expose private int statuses_count;
+    @Expose private int utc_offset;
+    @Expose private boolean isProtected;
+    @Expose private boolean following;
+    @Expose private boolean notifications;
+    @Expose private Status status;
 
     public User() {
     }
 
-    public User(JSONObject user) {
+    public User(Parcel in) {
+        String[] strings = new String[11];
+        in.readStringArray(strings);
+        this.id = strings[0];
+        this.name = strings[1];
+        this.screen_name = strings[2];
+        this.location = strings[3];
+        this.gender = strings[4];
+        this.birthday = strings[5];
+        this.description = strings[6];
+        this.profile_image_url = strings[7];
+        this.profile_image_url_large = strings[8];
+        this.url = strings[9];
+        this.created_at = strings[10];
 
-        jsonString = user.toString();
+        int[] ints = new int[5];
+        in.readIntArray(ints);
+        this.followers_count = ints[0];
+        this.friends_count = ints[1];
+        this.favourites_count = ints[2];
+        this.statuses_count = ints[3];
+        this.utc_offset = ints[4];
 
-        this.created_at = user.optString("created_at");
-        this.name = user.optString("name");
-        this.id = user.optString("id");
-        this.screen_name = user.optString("screen_name");
-        this.location = user.optString("location");
-        this.gender = user.optString("gender");
-        this.birthday = user.optString("birthday");
-        this.description = user.optString("description");
-        this.profile_image_url = user.optString("profile_image_url");
-        this.profile_image_url_large = user.optString("profile_image_url_large");
-        this.url = user.optString("url");
-        this.isProtected = user.optBoolean("protected", false);
-        this.followers_count = user.optInt("followers_count", 0);
-        this.friends_count = user.optInt("friends_count", 0);
-        this.favourites_count = user.optInt("favourites_count", 0);
-        this.statuses_count = user.optInt("statuses_count", 0);
-        this.following = user.optBoolean("following", false);
-        this.notifications = user.optBoolean("notifications", false);
-        this.utc_offset = user.optInt("utc_offset", 0);
-        JSONObject statusJson = user.optJSONObject("status");
-        if (statusJson != null && statusJson.length() > 0) {
-            this.status = new Status(statusJson);
-        }
+        boolean[] booleans = new boolean[3];
+        this.isProtected = booleans[0];
+        this.following = booleans[1];
+        this.notifications = booleans[2];
+
+        this.status = in.readParcelable(Status.class.getClassLoader());
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int i) {
+
+        out.writeStringArray(new String[]{id, name, screen_name, location, gender, birthday
+                , description, profile_image_url, profile_image_url_large, url, created_at});
+        out.writeIntArray(new int[]{followers_count, friends_count, favourites_count
+                , statuses_count, utc_offset});
+        out.writeBooleanArray(new boolean[]{isProtected, following, notifications});
+        out.writeParcelable(status, i);
+
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel parcel) {
+            return new User(parcel);
+        }
+
+        @Override
+        public User[] newArray(int i) {
+            return new User[i];
+        }
+    };
 
     public String getId() {
         return id;
@@ -243,19 +279,27 @@ public class User{
 
     @Override
     public String toString() {
-        return "User [id=" + id + ", name=" + name + ", screen_name="
-                + screen_name + ", location=" + location + ", desription="
-                + description + ", profile_image_url=" + profile_image_url
-                + ", url=" + url + ", isProtected=" + isProtected
-                + ", friends_count=" + friends_count + ", followers_count="
-                + followers_count + ", favourites_count=" + favourites_count
-                + ", created_at=" + created_at + ", following=" + following
-                + ", notifications=" + notifications + ", utc_offset="
-                + utc_offset + ", status=" + status + "]";
-    }
-
-
-    public String getJsonString() {
-        return this.jsonString;
+        return "User{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", screen_name='" + screen_name + '\'' +
+                ", location='" + location + '\'' +
+                ", gender='" + gender + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", description='" + description + '\'' +
+                ", profile_image_url='" + profile_image_url + '\'' +
+                ", profile_image_url_large='" + profile_image_url_large + '\'' +
+                ", url='" + url + '\'' +
+                ", created_at='" + created_at + '\'' +
+                ", followers_count=" + followers_count +
+                ", friends_count=" + friends_count +
+                ", favourites_count=" + favourites_count +
+                ", statuses_count=" + statuses_count +
+                ", utc_offset=" + utc_offset +
+                ", isProtected=" + isProtected +
+                ", following=" + following +
+                ", notifications=" + notifications +
+                ", status=" + status +
+                '}';
     }
 }
