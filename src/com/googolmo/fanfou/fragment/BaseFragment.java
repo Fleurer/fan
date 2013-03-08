@@ -1,12 +1,17 @@
 package com.googolmo.fanfou.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.googolmo.fanfou.api.Api;
 import com.googolmo.fanfou.BaseApplication;
+import com.googolmo.fanfou.api.FanfouException;
 import com.googolmo.fanfou.data.Provider;
 
 /**
@@ -52,4 +57,8 @@ public class BaseFragment extends SherlockFragment{
     public void onDestroy() {
         super.onDestroy();
     }
+
+
+
+
 }

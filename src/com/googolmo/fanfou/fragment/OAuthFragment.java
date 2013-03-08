@@ -12,16 +12,13 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.googolmo.fanfou.api.FanfouException;
 import com.googolmo.fanfou.api.http.AccessToken;
-import com.googolmo.fanfou.api.http.RequestToken;
 import com.googolmo.fanfou.api.http.Token;
 import com.googolmo.fanfou.api.module.User;
+import com.googolmo.fanfou.utils.ErrorHandler;
 import com.googolmo.fanfou.utils.NLog;
 import com.googolmo.fanfou.Constants;
 import com.googolmo.fanfou.MainActivity;
 import com.googolmo.fanfou.R;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import org.json.JSONObject;
 
 /**
  * User: googolmo
@@ -91,25 +88,8 @@ public class OAuthFragment extends BaseFragment {
             String oauthToken = url.substring(index + 1);
             oauthToken = oauthToken.split("=")[1];
         Token o = new Token(oauthToken, mApi.getOAuthToken().getTokenSecret());
-//        mApi.setOAuthToken(o);
         AccessTokenTask task = new AccessTokenTask(o);
         task.execute();
-////            RequestToken o = mApi.setRequestToken(oauthToken, mApi.getOAuthToken().getTokenSecret());
-//            mApi.getAccessToken(o, new AsyncHttpResponseHandler() {
-//                @Override
-//                public void onSuccess(String content) {
-//                    super.onSuccess(content);
-//                    AccessToken accessToken = mApi.setAccessToken(content);
-//                    verify_credentials();
-//                    NLog.d(TAG, content);
-//                }
-//
-//                @Override
-//                public void onFailure(Throwable error, String content) {
-//                    super.onFailure(error, content);
-//                    NLog.d(TAG, content);
-//                }
-//            });
             return oauthToken;
 
     }
@@ -117,30 +97,7 @@ public class OAuthFragment extends BaseFragment {
     private void init() {
 
     }
-//
-//    private void verify_credentials() {
-//        mApi.verify_credentials(new JsonHttpResponseHandler() {
-//            @Override
-//            public void onSuccess(JSONObject response) {
-//                super.onSuccess(response);
-//                User user = new User(response);
-//                getProvider().setToken((AccessToken) mApi.getOAuthToken(), user.getId());
-//                getProvider().setCurrentUserId(user.getId());
-//                getProvider().getDB().addUser(user);
-//                NLog.d(TAG, user.toString());
-//                Intent intent = new Intent(getActivity(), MainActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivity(intent);
-//                getSherlockActivity().setResult(Activity.RESULT_OK);
-//                getSherlockActivity().finish();
-//            }
-//
-//            @Override
-//            public void onFailure(Throwable e, JSONObject errorResponse) {
-//                super.onFailure(e, errorResponse);
-//            }
-//        });
-//    }
+
 
 
     private void refresh() {
@@ -197,6 +154,7 @@ public class OAuthFragment extends BaseFragment {
                 getSherlockActivity().finish();
             } catch (FanfouException e) {
                 e.printStackTrace();
+                ErrorHandler.handlerError(getActivity(), e);
             }
             return null;
         }

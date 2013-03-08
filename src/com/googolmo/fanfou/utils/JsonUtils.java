@@ -6,6 +6,8 @@ package com.googolmo.fanfou.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  * User: GoogolMo
@@ -14,6 +16,7 @@ import com.google.gson.GsonBuilder;
  */
 public class JsonUtils {
     private static Gson mGson;
+    private static JsonParser mJsonParser;
 
     public static Gson getGson() {
         if (mGson == null) {
@@ -29,5 +32,16 @@ public class JsonUtils {
 
     public static void setGson(Gson gson) {
         mGson = gson;
+    }
+
+    public static JsonParser getJsonParser() {
+        if (mJsonParser == null) {
+            mJsonParser = new JsonParser();
+        }
+        return mJsonParser;
+    }
+
+    public static JsonObject parser(String json) {
+        return getJsonParser().parse(json).getAsJsonObject();
     }
 }
