@@ -18,6 +18,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.googolmo.fanfou.api.module.Status;
 import com.googolmo.fanfou.Constants;
 import com.googolmo.fanfou.R;
+import com.googolmo.fanfou.api.module.User;
 import com.googolmo.fanfou.app.ShareActivity;
 import com.googolmo.fanfou.app.ViewImageActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -81,17 +82,8 @@ public class StatusFragment extends BaseFragment implements ActionBarSherlock.On
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String s = getArguments().getString(Constants.KEY_STATUS, "");
-        if (s != null && !s.equals("")) {
-            try {
-//                mStatus = new Status(new JSONObject(s));
-            } catch (JSONException e) {
-                e.printStackTrace();
-                mStatus = null;
-            }
-        } else {
-            mStatus = null;
-        }
+        User u = getArguments().getParcelable(Constants.KEY_STATUS);
+        mStatus = getArguments().getParcelable(Constants.KEY_STATUS);
 
         setHasOptionsMenu(true);
 

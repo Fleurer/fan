@@ -4,12 +4,15 @@
 
 package com.googolmo.fanfou.utils;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.widget.Toast;
+import com.googolmo.fanfou.R;
 import com.googolmo.fanfou.api.FanfouException;
 
 /**
@@ -58,11 +61,21 @@ public class ErrorHandler extends Handler{
                         mCallBack.afterShow();
                     }
                 } else if (showType.equals(ShowType.DIALOG.name())) {
-
+                    AlertDialog dialog = new AlertDialog.Builder(mContext)
+                            .setTitle(mContext.getString(R.string.error_title))
+                            .setMessage(e.getError())
+                            .setPositiveButton(mContext.getString(R.string.sure), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                    if (mCallBack != null) {
+                                        mCallBack.afterShow();
+                                    }
+                                }
+                            })
+                            .create();
+                    dialog.show();
                 }
-
-
-
             }
         }
     }
@@ -79,9 +92,12 @@ public class ErrorHandler extends Handler{
         data.putString("showtype", type.name());
         msg.setData(data);
         this.sendMessage(msg);
-
     }
 
+//    public class ErrorDialog{
+//        private String title;
+//        private String message;
+//    }
 
 
     public interface CallBack{
@@ -94,11 +110,9 @@ public class ErrorHandler extends Handler{
         DIALOG,
     };
 
-    public static void handlerError(Context context, FanfouException e) {
+    public static void handlerError(Context context, FanfouException e, ShowType type, CallBack callBack) {
         ErrorHandler handler = new ErrorHandler(context);
-        Message msg = handler.obtainMessage(400);
-        msg.obj = e;
-        handler.sendMessage(msg);
+        handler.handlerError(e, type, callBack);
     }
 
 

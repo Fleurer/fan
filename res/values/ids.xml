@@ -28,5 +28,7 @@
     <item type="id" name="container" />
     <item type="id" name="content" />
     <item type="id" name="tv_title" />
+    <item type="id" name="list_loadmore"/>
     <item type="id" name="fragment_content" />
+    <item type="id" name="list_status"/>
 </resources>

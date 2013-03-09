@@ -3,14 +3,13 @@ package com.googolmo.fanfou.api.module;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
-import org.json.JSONObject;
 
 /**
  * User: googolmo
  * Date: 12-9-7
  * Time: 下午10:48
  */
-public class Status implements Parcelable{
+public class Status extends JData implements Parcelable{
 
     @Expose private String created_at;
     @Expose private String id;
@@ -48,11 +47,11 @@ public class Status implements Parcelable{
         this.repost_user_id = s[9];
         this.repost_screen_name = s[10];
 
-        this.rawid = in.readInt();
-
         boolean[] b = new boolean[2];
         this.favorited = b[0];
         this.truncated = b[1];
+
+        this.rawid = in.readInt();
 
         this.user = in.readParcelable(User.class.getClassLoader());
         this.photo = in.readParcelable(Photo.class.getClassLoader());
@@ -69,8 +68,9 @@ public class Status implements Parcelable{
         out.writeStringArray(new String[]{created_at, id, text, source, location
                 , in_reply_to_status_id, in_reply_to_user_id, in_reply_to_screen_name
                 , repost_status_id, repost_user_id, repost_screen_name});
-        out.writeInt(rawid);
         out.writeBooleanArray(new boolean[]{favorited, truncated});
+
+        out.writeInt(rawid);
         out.writeParcelable(user, flags);
         out.writeParcelable(photo, flags);
         out.writeParcelable(repost_status, flags);

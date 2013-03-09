@@ -10,11 +10,11 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.googolmo.fanfou.api.http.AccessToken;
+import com.googolmo.fanfou.api.http.Session;
 import com.googolmo.fanfou.app.OAuthActivity;
 import com.googolmo.fanfou.data.Provider;
+import com.googolmo.fanfou.fragment.HomeTimelineFragment;
 import com.googolmo.fanfou.fragment.MenuFragment;
-import com.googolmo.fanfou.fragment.TimeLineFragment;
 import com.googolmo.fanfou.module.MenuModule;
 import com.slidingmenu.lib.SlidingMenu;
 import com.slidingmenu.lib.app.SlidingFragmentActivity;
@@ -46,13 +46,13 @@ public class MainActivity extends SlidingFragmentActivity{
 
         this.mProvider = ((BaseApplication) getApplication()).getProvider();
         if (this.mProvider.getCurrentUser() != null && !this.mProvider.getCurrentUserId().equals("")) {
-            AccessToken accessToken = mProvider.getToken(mProvider.getCurrentUserId());
-            if (accessToken == null || accessToken.getToken().equals("") || accessToken.getTokenSecret().equals("")) {
+            Session session = mProvider.getSession(mProvider.getCurrentUserId());
+            if (!session.isAvailed()) {
                 startLogin(this);
                 this.finish();
                 return;
             }
-            ((BaseApplication) getApplication()).getApi().setOAuthToken(accessToken);
+            ((BaseApplication) getApplication()).getApi().setOAuthToken(session);
         } else {
             startLogin(this);
             this.finish();
@@ -68,9 +68,7 @@ public class MainActivity extends SlidingFragmentActivity{
 
 
         if (mContent == null) {
-            Bundle timelineBundle = new Bundle();
-            timelineBundle.putInt(Constants.KEY_HOME_TAB_MODE, Constants.KEY_HOME_TAB_MODE_HOME_TIMELINE);
-            mContent = Fragment.instantiate(this, TimeLineFragment.class.getName(), timelineBundle);
+            mContent = Fragment.instantiate(this, HomeTimelineFragment.class.getName(), null);
             mFragments.put(getString(R.string.home_timeline), mContent);
 
         }

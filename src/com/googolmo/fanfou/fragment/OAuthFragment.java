@@ -10,14 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import com.googolmo.fanfou.MainActivity;
 import com.googolmo.fanfou.api.FanfouException;
-import com.googolmo.fanfou.api.http.AccessToken;
+import com.googolmo.fanfou.api.http.Session;
 import com.googolmo.fanfou.api.http.Token;
 import com.googolmo.fanfou.api.module.User;
 import com.googolmo.fanfou.utils.ErrorHandler;
 import com.googolmo.fanfou.utils.NLog;
 import com.googolmo.fanfou.Constants;
-import com.googolmo.fanfou.MainActivity;
 import com.googolmo.fanfou.R;
 
 /**
@@ -130,7 +130,7 @@ public class OAuthFragment extends BaseFragment {
         }
     }
 
-    private class AccessTokenTask extends AsyncTask<Void, Void, AccessToken> {
+    private class AccessTokenTask extends AsyncTask<Void, Void, Session> {
         private Token token;
 
         private AccessTokenTask(Token token) {
@@ -138,25 +138,44 @@ public class OAuthFragment extends BaseFragment {
         }
 
         @Override
-        protected AccessToken doInBackground(Void... voids) {
+        protected Session doInBackground(Void... voids) {
             try {
                 Token t = mApi.getAccessToken(token);
                 User user = mApi.verify_credentials();
-
-                getProvider().setToken((AccessToken) mApi.getOAuthToken(), user.getId());
-                getProvider().setCurrentUserId(user.getId());
+                Session s = new Session(user.getId(), t);
+                getProvider().addSession(s);
                 getProvider().getDB().addUser(user);
+                getProvider().setCurrentUserId(user.getId());
                 NLog.d(TAG, user.toString());
+                return s;
+            } catch (FanfouException e) {
+                e.printStackTrace();
+                ErrorHandler.handlerError(getActivity(), e, ErrorHandler.ShowType.DIALOG, new ErrorHandler.CallBack() {
+                    @Override
+                    public void beforeShow() {
+                    }
+
+                    @Override
+                    public void afterShow() {
+                        getActivity().finish();
+                    }
+                });
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Session session) {
+            super.onPostExecute(session);
+            if (session != null) {
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-                getSherlockActivity().setResult(Activity.RESULT_OK);
-                getSherlockActivity().finish();
-            } catch (FanfouException e) {
-                e.printStackTrace();
-                ErrorHandler.handlerError(getActivity(), e);
+
+                getActivity().setResult(Activity.RESULT_OK);
+                getActivity().finish();
+
             }
-            return null;
         }
     }
 }

@@ -93,12 +93,12 @@
             <version>${sherlock.version}</version>
             <type>apklib</type>
         </dependency>
-        <dependency>
-            <groupId>com.d.pulltorefresh</groupId>
-            <artifactId>pulltorefresh</artifactId>
-            <version>1.4.2-SNAPSHOT</version>
-            <type>apklib</type>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.d.pulltorefresh</groupId>-->
+            <!--<artifactId>pulltorefresh</artifactId>-->
+            <!--<version>1.4.2-SNAPSHOT</version>-->
+            <!--<type>apklib</type>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>com.d.imageloader</groupId>
             <artifactId>loader</artifactId>
@@ -120,6 +120,11 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.2.2</version>
+        </dependency>
+        <dependency>
+            <artifactId>crouton</artifactId>
+            <version>1.7</version>
+            <groupId>de.keyboardsurfer.android.widget</groupId>
         </dependency>
     </dependencies>
 

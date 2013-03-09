@@ -3,14 +3,13 @@ package com.googolmo.fanfou.api.module;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
-import com.googolmo.fanfou.utils.JsonUtils;
 
 /**
  * User: googolmo
  * Date: 12-9-7
  * Time: 下午10:48
  */
-public class Photo implements Parcelable{
+public class Photo extends JData implements Parcelable{
 
     @Expose private String thumburl;
     @Expose private String imageurl;

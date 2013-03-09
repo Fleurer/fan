@@ -34,6 +34,7 @@ public class Constants {
     public static final int SHARE_TEXT_MAX_COUNT = 140;
 
     public static final String KEY_STATUS = "status";
+    public static final String KEY_SESSION = "session";
 
     public static String getTAG(String tag) {
         return String.format("%1$s.%2$s", TAG, tag);

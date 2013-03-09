@@ -5,20 +5,21 @@
 package com.googolmo.fanfou.api;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.googolmo.fanfou.api.http.AccessToken;
+import com.google.gson.reflect.TypeToken;
 import com.googolmo.fanfou.api.http.Method;
 import com.googolmo.fanfou.api.http.OAuth;
 import com.googolmo.fanfou.api.http.RequestParam;
 import com.googolmo.fanfou.api.http.Response;
 import com.googolmo.fanfou.api.http.Token;
 import com.googolmo.fanfou.api.http.URLClient;
+import com.googolmo.fanfou.api.module.Status;
 import com.googolmo.fanfou.api.module.User;
 import com.googolmo.fanfou.utils.JsonUtils;
 import com.googolmo.fanfou.utils.NLog;
 import org.apache.http.NameValuePair;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,15 +45,25 @@ public class Api {
     private URLClient mClient;
     private Gson mGson;
 
-    public Api(String consumerKey, String consumerSecret) {
+    public Api(String consumerKey, String consumerSecret, Gson gson) {
         this.mConsumerKey = consumerKey;
         this.mConsumerSecret = consumerSecret;
+        this.mGson = gson;
         init();
+    }
+
+    public void setGson(Gson gson) {
+        this.mGson = gson;
     }
 
     private void init() {
         this.mClient = new URLClient();
-        this.mGson = JsonUtils.getGson();
+        this.mOAuth = new OAuth(this.mConsumerKey, this.mConsumerSecret);
+        if (this.mGson == null) {
+            this.mGson = JsonUtils.getGson();
+        }
+
+
     }
 
     public void setOAuthToken(Token token) {
@@ -93,7 +104,7 @@ public class Api {
      */
     public Token getRequestToken() throws FanfouException {
         List<NameValuePair> headers = new ArrayList<NameValuePair>();
-        String sign = mOAuth.getOAuthSignature(Method.GET.name(), REQUEST_TOKEN_URL, null, (Token) null);
+        String sign = mOAuth.getOAuthSignature(Method.GET.name(), REQUEST_TOKEN_URL, null, null);
         headers.add(new RequestParam("Authorization", sign));
         this.oAuthToken = new Token(get(REQUEST_TOKEN_URL, null, headers));
         return this.oAuthToken;
@@ -112,9 +123,73 @@ public class Api {
         return t;
     }
 
+    /**
+     * 验证用户信息
+     * @return
+     * @throws FanfouException
+     */
     public User verify_credentials() throws FanfouException {
         String result = get(getAbsoluteUrl("/account/verify_credentials.json"), null, true);
         return this.mGson.fromJson(result, User.class);
+    }
+
+    public List<Status> getHomeTimeline(String userId, String sinceId, String maxId
+            , int count, int page, boolean isLite) throws FanfouException {
+        String url = getAbsoluteUrl("/statuses/home_timeline.json");
+        List<NameValuePair> p = new ArrayList<NameValuePair>();
+        if (userId != null) {
+            p.add(new RequestParam("id", userId));
+        }
+        if (sinceId != null) {
+            p.add(new RequestParam("since_id", sinceId));
+        }
+        if (maxId != null) {
+            p.add(new RequestParam("max_id", maxId));
+        }
+        if (count > 0) {
+            p.add(new RequestParam("count", String.valueOf(count)));
+        }
+        if (page > 0) {
+            p.add(new RequestParam("page", String.valueOf(page)));
+        }
+        if (isLite) {
+            p.add(new RequestParam("mode", "lite"));
+        }
+        Type type = new TypeToken<List<Status>>(){}.getType();
+        return mGson.fromJson(get(url, p, true), type);
+    }
+
+    /**
+     * 获得回复列表
+     * @param sinceId
+     * @param maxId
+     * @param count
+     * @param page
+     * @param isLite
+     * @return
+     * @throws FanfouException
+     */
+    public List<Status> getMentions(String sinceId, String maxId, int count, int page
+            , boolean isLite) throws FanfouException {
+        String url = getAbsoluteUrl("/statuses/mentions.json");
+        List<NameValuePair> p = new ArrayList<NameValuePair>();
+        if (sinceId != null) {
+            p.add(new RequestParam("since_id", sinceId));
+        }
+        if (maxId != null) {
+            p.add(new RequestParam("max_id", maxId));
+        }
+        if (count > 0 && count <= 60) {
+            p.add(new RequestParam("count", String.valueOf(count)));
+        }
+        if (page > 0) {
+            p.add(new RequestParam("page", String.valueOf(page)));
+        }
+        if (isLite) {
+            p.add(new RequestParam("mode", "lite"));
+        }
+        Type type = new TypeToken<List<Status>>(){}.getType();
+        return mGson.fromJson(get(url, p, true), type);
     }
 
 
@@ -153,7 +228,10 @@ public class Api {
     }
 
     private String get(String url, List<NameValuePair> params, List<NameValuePair> headers) throws FanfouException {
-        url = getQuery(url, params);
+        if (params != null) {
+            url = getQuery(url, params);
+        }
+
 
         Response response = mClient.fetch(url, Method.GET, null, headers);
         if (response.getResponseCode() > 300) {

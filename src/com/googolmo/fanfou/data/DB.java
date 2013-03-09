@@ -4,11 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.googolmo.fanfou.api.module.Status;
 import com.googolmo.fanfou.api.module.User;
 import com.googolmo.fanfou.utils.NLog;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +27,13 @@ public class DB {
     private SQLiteDatabase db;
     private DBHelper helper;
     private Context context;
+    private Gson gson;
 
-    public DB(Context context) {
+    public DB(Context context, Gson gson) {
         this.context = context;
         helper = new DBHelper(context);
         db = helper.getWritableDatabase();
+        this.gson = gson;
     }
 
     public void addStatuses(List<Status> statuses, String userId, int type) {
@@ -39,10 +41,13 @@ public class DB {
         try {
             db.delete("status", "userid like ? and type = ?", new String[]{userId, String.valueOf(type)});
             for (Status status : statuses) {
+                if (status.getRawid() > 0) {
+                    db.execSQL("insert into status values (?, ?, ?, ?, ?)", new Object[]{status.getId(),
+                            userId, status.getJsonString(), status.getRawid(), type});
+                }
 //                NLog.d(TAG, String.format("insert into status values(%1$s, %2$s, %3$s, %4$s)", status.getId(),
-//                        userId, status.getJsonString(), status.getRwaid()));
-                db.execSQL("insert into status values (?, ?, ?, ?, ?)", new Object[]{status.getId(),
-                        userId, status.getJsonString(), status.getRwaid(), type});
+//                        userId, status.getJsonString(), status.getRawid()));
+
             }
             db.setTransactionSuccessful();
             NLog.i(TAG, "add status user " + userId + " done");
@@ -67,8 +72,9 @@ public class DB {
         Cursor cursor = null;
         db.beginTransaction();
         try {
-            cursor = db.query("status", new String[]{"id", "userid", "rawId", "json"}, "userid like ? and type = ?",
-                    new String[]{userId, String.valueOf(type)}, null, null, null);
+
+            cursor = db.query(true, "status", new String[]{"id", "userid", "rawId", "json"}, "userid like ? and type = ?",
+                    new String[]{userId, String.valueOf(type)}, null, null, "rawId DESC", null);
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
@@ -82,7 +88,7 @@ public class DB {
             while (cursor.moveToNext()) {
                 String json = cursor.getString(cursor.getColumnIndex("json"));
                 try {
-                    statuses.add(new Status(new JSONObject(json)));
+                    statuses.add(gson.fromJson(json, Status.class));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -110,9 +116,9 @@ public class DB {
             try {
                 String s = cursor.getString(cursor.getColumnIndex("json"));
                 NLog.i(TAG, s);
-                return new Status(new JSONObject(s));
-            } catch (JSONException e) {
-
+                return gson.fromJson(s, Status.class);
+            } catch (JsonSyntaxException e) {
+                e.printStackTrace();
             }
         }
         return null;
@@ -143,8 +149,8 @@ public class DB {
 
             String json = cursor.getString(cursor.getColumnIndex("json"));
             try {
-                return new User(new JSONObject(json));
-            } catch (JSONException e) {
+                return gson.fromJson(json, User.class);
+            } catch (JsonSyntaxException e) {
                 e.printStackTrace();
             }
         }
@@ -186,7 +192,7 @@ public class DB {
 //                cursor.moveToFirst();
                 while (cursor.moveToNext()) {
                     try {
-                        users.add(new User(new JSONObject(cursor.getString(2))));
+                        users.add(gson.fromJson(cursor.getString(2), User.class));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

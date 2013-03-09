@@ -43,13 +43,9 @@ public class MenuFragment extends BaseFragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMenuList = new ArrayList<MenuModule>();
-        Bundle timelineBudle = new Bundle();
-        timelineBudle.putInt(Constants.KEY_HOME_TAB_MODE, Constants.KEY_HOME_TAB_MODE_HOME_TIMELINE);
-        mMenuList.add(new MenuModule(getString(R.string.home_timeline), TimeLineFragment.class.getName(), timelineBudle));
+        mMenuList.add(new MenuModule(getString(R.string.home_timeline), HomeTimelineFragment.class.getName(), null));
 
-        Bundle mentionBundle = new Bundle();
-        mentionBundle.putInt(Constants.KEY_HOME_TAB_MODE, Constants.KEY_HOME_TAB_MODE_METIONS);
-        mMenuList.add(new MenuModule(getString(R.string.mentions), TimeLineFragment.class.getName(), mentionBundle));
+        mMenuList.add(new MenuModule(getString(R.string.mentions), MentionFragment.class.getName(), null));
 
 
         mAdapter = new MenuListAdapter();

@@ -19,7 +19,6 @@ import com.actionbarsherlock.ActionBarSherlock;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.googolmo.fanfou.api.FanfouException;
 import com.googolmo.fanfou.utils.NLog;
 import com.googolmo.fanfou.BaseActivity;
 import com.googolmo.fanfou.Constants;
@@ -27,12 +26,8 @@ import com.googolmo.fanfou.R;
 import com.googolmo.fanfou.utils.app.ExternalStorageUtils;
 import com.googolmo.fanfou.utils.app.IntentUtils;
 import com.googolmo.fanfou.utils.graphics.BitmapUtils;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 /**
  * User: googolmo
@@ -57,7 +52,7 @@ public class ShareActivity extends BaseActivity{
     private File mTempImage;
 
 
-    private JsonHttpResponseHandler mHandler;
+//    private JsonHttpResponseHandler mHandler;
 
     private EditText mStatusText;
     private Dialog mDialog;
@@ -113,7 +108,7 @@ public class ShareActivity extends BaseActivity{
     }
 
     private void init() {
-        mHandler = new UpdateHandler();
+//        mHandler = new UpdateHandler();
         mShareText = "";
 //        mReplyId = "";
 //        mRepostId = "";
@@ -297,31 +292,31 @@ public class ShareActivity extends BaseActivity{
     }
 
     private void update() {
-        if (getProvider().getCurrentUser() == null) {
-            startLogin(ShareActivity.this);
-        } else {
-            mShareText = mStatusText.getText().toString();
-            if (mShareText.length() <= 0 && mBitmap != null) {
-                Toast.makeText(ShareActivity.this, R.string.error_text_empty, Toast.LENGTH_SHORT).show();
-            } else if (mShareText.length() > 140) {
-                Toast.makeText(ShareActivity.this, R.string.error_text_length, Toast.LENGTH_SHORT).show();
-            } else {
-                if (mBitmap != null) {
-                    try {
-                        if (mShareText.trim().length() == 0) {
-                            mShareText = getString(R.string.upload_a_new_image);
-                        }
-                        InputStream input = getContentResolver().openInputStream(mUri);
-                        getApi().upload(input, mShareText, mLocaton, true, mHandler);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    getApi().update(mShareText, mReplyId, mReplyUserid, mRepostId, mLocaton, true, mHandler);
-                }
-            }
-
-        }
+//        if (getProvider().getCurrentUser() == null) {
+//            startLogin(ShareActivity.this);
+//        } else {
+//            mShareText = mStatusText.getText().toString();
+//            if (mShareText.length() <= 0 && mBitmap != null) {
+//                Toast.makeText(ShareActivity.this, R.string.error_text_empty, Toast.LENGTH_SHORT).show();
+//            } else if (mShareText.length() > 140) {
+//                Toast.makeText(ShareActivity.this, R.string.error_text_length, Toast.LENGTH_SHORT).show();
+//            } else {
+//                if (mBitmap != null) {
+//                    try {
+//                        if (mShareText.trim().length() == 0) {
+//                            mShareText = getString(R.string.upload_a_new_image);
+//                        }
+//                        InputStream input = getContentResolver().openInputStream(mUri);
+//                        getApi().upload(input, mShareText, mLocaton, true, mHandler);
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+//                } else {
+//                    getApi().update(mShareText, mReplyId, mReplyUserid, mRepostId, mLocaton, true, mHandler);
+//                }
+//            }
+//
+//        }
 
 
     }
@@ -364,51 +359,51 @@ public class ShareActivity extends BaseActivity{
     }
 
 
-    private class UpdateHandler extends JsonHttpResponseHandler {
-
-        @Override
-        public void onStart() {
-            super.onStart();
-            showProgress();
-        }
-
-        @Override
-        public void onFinish() {
-            super.onFinish();
-            clearDialog();
-        }
-
-        @Override
-        public void onSuccess(JSONObject response) {
-            super.onSuccess(response);
-            NLog.d(TAG, response.toString());
-            Toast.makeText(ShareActivity.this, R.string.update_success, Toast.LENGTH_SHORT).show();
-
-            setResult(RESULT_OK);
-            finish();
-        }
-
-        @Override
-        public void onFailure(Throwable e, JSONObject errorResponse) {
-            super.onFailure(e, errorResponse);
-            e.printStackTrace();
-            NLog.e(TAG, errorResponse.toString());
-            if (errorResponse != null) {
-                FanfouException ex = new FanfouException(errorResponse);
-                Toast.makeText(ShareActivity.this, ex.getError(), Toast.LENGTH_LONG).show();
-            }
-
-
-        }
-
-        @Override
-        public void onFailure(Throwable error, String content) {
-            super.onFailure(error, content);
-            NLog.e(TAG, content);
-            FanfouException ex = new FanfouException(error);
-            Toast.makeText(ShareActivity.this, ex.getError(), Toast.LENGTH_LONG).show();
-        }
-
-
-    }
+//    private class UpdateHandler extends JsonHttpResponseHandler {
+//
+//        @Override
+//        public void onStart() {
+//            super.onStart();
+//            showProgress();
+//        }
+//
+//        @Override
+//        public void onFinish() {
+//            super.onFinish();
+//            clearDialog();
+//        }
+//
+//        @Override
+//        public void onSuccess(JSONObject response) {
+//            super.onSuccess(response);
+//            NLog.d(TAG, response.toString());
+//            Toast.makeText(ShareActivity.this, R.string.update_success, Toast.LENGTH_SHORT).show();
+//
+//            setResult(RESULT_OK);
+//            finish();
+//        }
+//
+//        @Override
+//        public void onFailure(Throwable e, JSONObject errorResponse) {
+//            super.onFailure(e, errorResponse);
+//            e.printStackTrace();
+//            NLog.e(TAG, errorResponse.toString());
+//            if (errorResponse != null) {
+//                FanfouException ex = new FanfouException(errorResponse);
+//                Toast.makeText(ShareActivity.this, ex.getError(), Toast.LENGTH_LONG).show();
+//            }
+//
+//
+//        }
+//
+//        @Override
+//        public void onFailure(Throwable error, String content) {
+//            super.onFailure(error, content);
+//            NLog.e(TAG, content);
+//            FanfouException ex = new FanfouException(error);
+//            Toast.makeText(ShareActivity.this, ex.getError(), Toast.LENGTH_LONG).show();
+//        }
+//
+//
+//    }
 }

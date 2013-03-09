@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.googolmo.fanfou.api.Api;
-import com.googolmo.fanfou.api.http.AccessToken;
+import com.googolmo.fanfou.api.http.Session;
 import com.googolmo.fanfou.app.OAuthActivity;
 import com.googolmo.fanfou.data.Provider;
 
@@ -27,11 +27,11 @@ public class BaseActivity extends SherlockFragmentActivity{
         this.mProvider = ((BaseApplication) getApplication()).getProvider();
 
 		if (this.mProvider.getCurrentUser() != null && !this.mProvider.getCurrentUserId().equals("")) {
-			AccessToken accessToken = mProvider.getToken(mProvider.getCurrentUserId());
-			if (accessToken == null) {
+			Session session = mProvider.getSession(mProvider.getCurrentUserId());
+			if (!session.isAvailed()) {
 				startLogin(this);
 			}
-			this.mApi.setOAuthToken(accessToken);
+			this.mApi.setOAuthToken(session);
 		} else {
 			startLogin(this);
 		}

@@ -70,7 +70,11 @@ public class URLClient {
                 connection.connect();
 
                 code = connection.getResponseCode();
-                boolean isGzip = connection.getContentEncoding().equalsIgnoreCase("gzip");
+                boolean isGzip = false;
+                if (connection.getContentEncoding() != null) {
+                    isGzip = connection.getContentEncoding().equalsIgnoreCase("gzip");
+                }
+
                 if (code > 300) {
                     return new Response(readStream(connection.getErrorStream(), isGzip), code, getMessageByCode(code));
                 } else {
@@ -124,7 +128,7 @@ public class URLClient {
 
         InputStreamReader reader = new InputStreamReader(inputStream, "UTF-8");
         while ((l = reader.read(buf))  > 0) {
-            stringWriter.write(buf, 0 , 1);
+            stringWriter.write(buf, 0 , l);
         }
         stringWriter.flush();
         stringWriter.close();

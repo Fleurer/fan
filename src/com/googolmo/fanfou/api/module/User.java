@@ -3,17 +3,13 @@ package com.googolmo.fanfou.api.module;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * User: googolmo
  * Date: 12-9-7
  * Time: 下午10:48
  */
-public class User implements Parcelable{
+public class User extends JData implements Parcelable{
 
     @Expose private String id;
     @Expose private String name;

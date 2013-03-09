@@ -3,11 +3,14 @@ package com.googolmo.fanfou.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import com.googolmo.fanfou.api.http.AccessToken;
-import com.googolmo.fanfou.api.http.Token;
+import com.google.gson.Gson;
+import com.googolmo.fanfou.api.http.Session;
 import com.googolmo.fanfou.api.module.User;
 import com.googolmo.fanfou.utils.NLog;
 import com.googolmo.fanfou.R;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * User: googolmo
@@ -19,60 +22,61 @@ public class Provider {
 
     private Context mContext;
     private DB db;
+    private Gson gson;
 
-    public Provider(Context context) {
+    public Provider(Context context, Gson gson) {
         this.mContext = context;
-        db = new DB(context);
+        this.gson = gson;
+        db = new DB(context, gson);
     }
 
-    public void setToken(Token token) {
-        setToken(token, getCurrentUserId());
-    }
-
-    public void setToken(Token token, String userId) {
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences(userId + "_token", Context.MODE_PRIVATE);
+    public void addSession(Session s) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("sessions", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("at", token.getToken());
-        editor.putString("ats", token.getTokenSecret());
+        editor.putString(getUserString(s.getUserId(), "at"), s.getToken());
+        editor.putString(getUserString(s.getUserId(), "ats"), s.getTokenSecret());
+        addUserId(s.getUserId());
         editor.commit();
+//        setCurrentUserId(s.getUserId());
     }
 
-    public AccessToken getToken() {
-        return getToken(getCurrentUserId());
+    public Session getToken() {
+        return getSession(getCurrentUserId());
     }
 
-    public AccessToken getToken(String userId) {
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences(userId + "_token", Context.MODE_PRIVATE);
-        AccessToken token = new AccessToken(sharedPreferences.getString("at", ""),
-                sharedPreferences.getString("ats", ""));
-        if (token.getToken().equals("")) {
-            return null;
-        }
-        return token;
+    private String getUserString(String userId, String originString) {
+        return userId + "_" + originString;
+    }
+
+    public Session getSession(String userId) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("sessions", Context.MODE_PRIVATE);
+        Session s = new Session(userId, sharedPreferences.getString(getUserString(userId ,"at"), null),
+                sharedPreferences.getString(getUserString(userId, "ats"), ""));
+        return s;
     }
 
     public void setNewTLid(String userId, String id) {
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences(userId + "_data", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("sessions", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("ni", id);
+        editor.putString(getUserString(userId, "ni"), id);
         editor.commit();
     }
 
     public String getNewTLid(String userId) {
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences(userId + "_data", Context.MODE_PRIVATE);
-        return sharedPreferences.getString("ni", "");
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("sessions", Context.MODE_PRIVATE);
+        return sharedPreferences.getString(getUserString(userId, "ni"), "");
     }
 
     public void setOldTLid(String userId, String id) {
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences(userId + "_data", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("sessions", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("oi", id);
+        editor.putString(getUserString(userId, "oi"), id);
         editor.commit();
     }
 
     public String getOldTLid(String userId) {
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences(userId + "_data", Context.MODE_PRIVATE);
-        return sharedPreferences.getString("oi", "");
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("sessions", Context.MODE_PRIVATE);
+        return sharedPreferences.getString(getUserString(userId, "oi"), "");
     }
 
     /**
@@ -80,8 +84,42 @@ public class Provider {
      * @return
      */
     public String getCurrentUserId() {
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences("n", Context.MODE_PRIVATE);
-        return sharedPreferences.getString("cuid", "");
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("sessions", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("cuid", null);
+    }
+
+    /**
+     * 从持久化存储中获得保存的用户ID集合
+     * @return
+     */
+    public Set<String> getUserIds() {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("sessions", Context.MODE_PRIVATE);
+        String users = sharedPreferences.getString("uss", null);
+        Set<String> userIdSet = new HashSet<String>();
+        if (users != null) {
+            String[] s = users.split("&");
+            for (String id : s) {
+                userIdSet.add(id);
+            }
+        }
+        return userIdSet;
+    }
+
+    public void addUserId(String userId) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("sessions", Context.MODE_PRIVATE);
+        String users = sharedPreferences.getString("uss", "");
+        Set<String> userIds = getUserIds();
+
+        if (!userIds.contains(userId)) {
+            StringBuilder builder = new StringBuilder();
+            for (String id: userIds) {
+                builder.append(id);
+                builder.append("&");
+            }
+            builder.append(userId);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("uss", builder.toString());
+        }
     }
 
     /**
@@ -104,7 +142,7 @@ public class Provider {
      * @param id
      */
     public void setCurrentUserId(String id) {
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences("n", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("sessions", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("cuid", id);
         editor.commit();
@@ -118,5 +156,73 @@ public class Provider {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
         return sp.getInt(mContext.getString(R.string.sp_load_count), 20);
     }
+
+    public int getMaxCount() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+        return sp.getInt(mContext.getString(R.string.sp_load_count), 400);
+    }
+
+    public void setHomeTLScrollPostion(int scolledIndex, int scolledTop) {
+        SharedPreferences sp = mContext.getSharedPreferences("appinfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("hl_si", scolledIndex);
+        editor.putInt("hl_st", scolledTop);
+        editor.commit();
+    }
+
+    public int getHomeTLScrolledIndex() {
+        SharedPreferences sp = mContext.getSharedPreferences("appinfo", Context.MODE_PRIVATE);
+        return sp.getInt("hl_si", 0);
+    }
+
+    public int getHomeTLScrolledTop() {
+        SharedPreferences sp = mContext.getSharedPreferences("appinfo", Context.MODE_PRIVATE);
+        return sp.getInt("hl_st", 0);
+    }
+
+    public void addHomeTLLoadmoreMark(String userId, int index) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("sessions", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(getUserString(userId, "ldmark"), index);
+        editor.commit();
+    }
+
+    public int getHomeTLLoadmoreMark(String userId) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("sessions", Context.MODE_PRIVATE);
+        return sharedPreferences.getInt(getUserString(userId, "ldmark"), 0);
+    }
+
+    public void setHomeMTScrollPostion(int scolledIndex, int scolledTop) {
+        SharedPreferences sp = mContext.getSharedPreferences("appinfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("mt_si", scolledIndex);
+        editor.putInt("mt_st", scolledTop);
+        editor.commit();
+    }
+
+    public int getHomeMTScrolledIndex() {
+        SharedPreferences sp = mContext.getSharedPreferences("appinfo", Context.MODE_PRIVATE);
+        return sp.getInt("mt_si", 0);
+    }
+
+    public int getHomeMTScrolledTop() {
+        SharedPreferences sp = mContext.getSharedPreferences("appinfo", Context.MODE_PRIVATE);
+        return sp.getInt("mt_st", 0);
+    }
+
+    public void addHomeMTLoadmoreMark(String userId, int index) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("sessions", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(getUserString(userId, "mldmark"), index);
+        editor.commit();
+    }
+
+    public int getHomeMTLoadmoreMark(String userId) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("sessions", Context.MODE_PRIVATE);
+        return sharedPreferences.getInt(getUserString(userId, "mldmark"), 0);
+    }
+
+
+
 
 }

@@ -2,8 +2,9 @@ package com.googolmo.fanfou;
 
 
 import android.app.Application;
+import com.google.gson.Gson;
 import com.googolmo.fanfou.api.Api;
-import com.googolmo.fanfou.api.Shmily;
+import com.googolmo.fanfou.utils.JsonUtils;
 import com.googolmo.fanfou.utils.NLog;
 import com.googolmo.fanfou.data.Provider;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -19,6 +20,7 @@ public class BaseApplication extends Application {
 //    private Shmily mApi;
     private Api mApi;
     private Provider mProvider;
+    private Gson gson;
 
     public Api getApi() {
         return mApi;
@@ -34,8 +36,9 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         NLog.setDebug(Constants.DEBUG);
-        this.mApi = new Api(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
-        this.mProvider = new Provider(this);
+        this.gson = JsonUtils.getGson();
+        this.mApi = new Api(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET, this.gson);
+        this.mProvider = new Provider(getApplicationContext(), gson);
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
                 .cacheOnDisc(true)

@@ -4,6 +4,9 @@
 
 package com.googolmo.fanfou.api.http;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -11,7 +14,7 @@ import javax.crypto.spec.SecretKeySpec;
  * Date: 13-3-6
  * Time: 下午9:41
  */
-public class Token {
+public class Token implements Parcelable{
 
     private String token;
     private String tokenSecret;
@@ -78,10 +81,39 @@ public class Token {
 
     @Override
     public String toString() {
-        return "OAuthToken{" +
+        return "Token{" +
                 "token='" + token + '\'' +
                 ", tokenSecret='" + tokenSecret + '\'' +
                 ", secretKeySpec=" + secretKeySpec +
                 '}';
     }
+
+    public Token(Parcel in) {
+        String[] s = new String[2];
+        in.readStringArray(s);
+        this.token = s[0];
+        this.tokenSecret = s[1];
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeStringArray(new String[]{token, tokenSecret});
+    }
+
+    public static final Creator<Token> CREATOR = new Creator<Token>() {
+        @Override
+        public Token createFromParcel(Parcel parcel) {
+            return new Token(parcel);
+        }
+
+        @Override
+        public Token[] newArray(int i) {
+            return new Token[i];
+        }
+    };
 }
