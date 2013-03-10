@@ -192,6 +192,40 @@ public class Api {
         return mGson.fromJson(get(url, p, true), type);
     }
 
+    /**
+     * 发布一条纯文字的饭否
+     * @param status
+     * @param in_reply_to_status_id
+     * @param in_reply_to_user_id
+     * @param repost_status_id
+     * @param location
+     * @param isLite
+     * @return
+     * @throws FanfouException
+     */
+    public Status publish(String status, String in_reply_to_status_id, String in_reply_to_user_id, String repost_status_id,
+                          String location, boolean isLite) throws FanfouException {
+        String url = getAbsoluteUrl("/statuses/update.json");
+        List<NameValuePair> p = new ArrayList<NameValuePair>();
+        p.add(new RequestParam("status", status));
+        if (in_reply_to_status_id != null && !in_reply_to_status_id.equals("")) {
+            p.add(new RequestParam("in_reply_to_status_id", in_reply_to_status_id));
+        }
+        if (in_reply_to_user_id != null && !in_reply_to_user_id.equals("")) {
+            p.add(new RequestParam("in_reply_to_user_id", in_reply_to_user_id));
+        }
+        if (repost_status_id != null && !repost_status_id.equals("")) {
+            p.add(new RequestParam("repost_status_id", repost_status_id));
+        }
+        if (location != null) {
+            p.add(new RequestParam("location", location));
+        }
+        if (isLite) {
+            p.add(new RequestParam("mode", "lite"));
+        }
+        return mGson.fromJson(post(url, p, true), Status.class);
+    }
+
 
     /**
      *
@@ -232,10 +266,37 @@ public class Api {
             url = getQuery(url, params);
         }
 
+        NLog.d(TAG, "request:" + url);
 
         Response response = mClient.fetch(url, Method.GET, null, headers);
         if (response.getResponseCode() > 300) {
             //Error
+            NLog.d(TAG, "error code=" + response.getResponseCode());
+            NLog.d(TAG, "respose=[" + response.getResponseContent() + "]");
+            throw new FanfouException(response);
+        } else {
+            NLog.d(TAG, "respose=[" + response.getResponseContent() + "]");
+            return response.getResponseContent();
+        }
+    }
+
+    private String post(String url, List<NameValuePair> params, boolean isAuth) throws FanfouException {
+        List<NameValuePair> headers = null;
+        if (isAuth) {
+            headers = new ArrayList<NameValuePair>();
+            String sign = mOAuth.getOAuthSignature(Method.POST.name(), url, params, this.oAuthToken);
+            headers.add(new RequestParam("Authorization", sign));
+        }
+        return post(url, params, headers);
+    }
+
+    private String post(String url, List<NameValuePair> params, List<NameValuePair> headers) throws FanfouException {
+
+        Response response = mClient.fetch(url, Method.POST, params, headers);
+        if (response.getResponseCode() > 300) {
+            //Error
+            NLog.d(TAG, "error code=" + response.getResponseCode());
+            NLog.d(TAG, "respose=[" + response.getResponseContent() + "]");
             throw new FanfouException(response);
         } else {
             NLog.d(TAG, "respose=[" + response.getResponseContent() + "]");

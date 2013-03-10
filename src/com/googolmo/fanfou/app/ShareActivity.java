@@ -2,12 +2,17 @@ package com.googolmo.fanfou.app;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -19,6 +24,10 @@ import com.actionbarsherlock.ActionBarSherlock;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.googolmo.fanfou.api.Api;
+import com.googolmo.fanfou.api.FanfouException;
+import com.googolmo.fanfou.api.module.Status;
+import com.googolmo.fanfou.utils.ErrorHandler;
 import com.googolmo.fanfou.utils.NLog;
 import com.googolmo.fanfou.BaseActivity;
 import com.googolmo.fanfou.Constants;
@@ -34,10 +43,10 @@ import java.io.File;
  * Date: 12-9-9
  * Time: 下午7:09
  */
-public class ShareActivity extends BaseActivity{
+public class ShareActivity extends BaseActivity {
     private static final String TAG = ShareActivity.class.getName();
 
-    public static final int TYPE_NONE= 100;
+    public static final int TYPE_NONE = 100;
     public static final int TYPE_REPLY = 101;
     public static final int TYPE_REPOST = 102;
 
@@ -292,16 +301,18 @@ public class ShareActivity extends BaseActivity{
     }
 
     private void update() {
-//        if (getProvider().getCurrentUser() == null) {
-//            startLogin(ShareActivity.this);
-//        } else {
-//            mShareText = mStatusText.getText().toString();
-//            if (mShareText.length() <= 0 && mBitmap != null) {
-//                Toast.makeText(ShareActivity.this, R.string.error_text_empty, Toast.LENGTH_SHORT).show();
-//            } else if (mShareText.length() > 140) {
-//                Toast.makeText(ShareActivity.this, R.string.error_text_length, Toast.LENGTH_SHORT).show();
-//            } else {
-//                if (mBitmap != null) {
+        if (getProvider().getCurrentUser() == null) {
+            startLogin(ShareActivity.this);
+        } else
+
+        {
+            mShareText = mStatusText.getText().toString();
+            if (mShareText.length() <= 0 && mBitmap != null) {
+                Toast.makeText(ShareActivity.this, R.string.error_text_empty, Toast.LENGTH_SHORT).show();
+            } else if (mShareText.length() > 140) {
+                Toast.makeText(ShareActivity.this, R.string.error_text_length, Toast.LENGTH_SHORT).show();
+            } else {
+                if (mBitmap != null) {
 //                    try {
 //                        if (mShareText.trim().length() == 0) {
 //                            mShareText = getString(R.string.upload_a_new_image);
@@ -311,15 +322,17 @@ public class ShareActivity extends BaseActivity{
 //                    } catch (FileNotFoundException e) {
 //                        e.printStackTrace();
 //                    }
-//                } else {
-//                    getApi().update(mShareText, mReplyId, mReplyUserid, mRepostId, mLocaton, true, mHandler);
-//                }
-//            }
-//
-//        }
+                } else {
+                    PublishTask task = new PublishTask(this, getApi(), mShareText, mReplyId
+                              , mReplyUserid, mRepostId, mLocaton);
+                    task.execute();
 
+                }
+            }
 
+        }
     }
+
 
     private void startGallary() {
         try {
@@ -356,6 +369,57 @@ public class ShareActivity extends BaseActivity{
         ((ProgressDialog) mDialog).setMessage(getString(R.string.updating));
         mDialog.setCancelable(false);
         mDialog.show();
+    }
+
+    private class PublishTask extends AsyncTask<Void, Void, Status> {
+        private Status mData;
+        private String status;
+        private String replyStatusId;
+        private String replyUserId;
+        private String repostStatusId;
+        private String location;
+        private Api mApi;
+        private Context mContext;
+
+        public PublishTask(Context context, Api api, String status, String in_reply_to_status_id, String in_reply_to_user_id, String repost_status_id,
+                             String location) {
+            super();
+            this.mContext = context;
+            this.status = status;
+            this.replyStatusId = in_reply_to_status_id;
+            this.replyUserId = in_reply_to_user_id;
+            this.repostStatusId = repost_status_id;
+            this.location = location;
+            this.mApi = api;
+        }
+
+        @Override
+        protected com.googolmo.fanfou.api.module.Status doInBackground(Void... voids) {
+            try {
+                return this.mApi.publish(status, replyStatusId, replyUserId, repostStatusId, location, false);
+            } catch (FanfouException e) {
+                e.printStackTrace();
+                ErrorHandler.handlerError(mContext, e, ErrorHandler.ShowType.TOAST, null);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showProgress();
+        }
+
+        @Override
+        protected void onPostExecute(com.googolmo.fanfou.api.module.Status status) {
+            super.onPostExecute(status);
+            clearDialog();
+            if (status != null) {
+                setResult(RESULT_OK);
+                Toast.makeText(ShareActivity.this, R.string.update_success, Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
     }
 
 

@@ -26,6 +26,9 @@ public class ErrorHandler extends Handler{
     private CallBack mCallBack;
 
     private ErrorHandler(Context mContext) {
+        super();
+//        Looper.prepare();
+
         this.mContext = mContext;
     }
 
@@ -111,6 +114,7 @@ public class ErrorHandler extends Handler{
     };
 
     public static void handlerError(Context context, FanfouException e, ShowType type, CallBack callBack) {
+        Looper.prepare();
         ErrorHandler handler = new ErrorHandler(context);
         handler.handlerError(e, type, callBack);
     }

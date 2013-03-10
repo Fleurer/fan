@@ -1,6 +1,8 @@
 package com.googolmo.fanfou.api.http;
 
 
+import android.util.Log;
+import com.googolmo.fanfou.utils.NLog;
 import com.googolmo.fanfou.utils.Utils;
 import org.apache.http.NameValuePair;
 
@@ -21,6 +23,7 @@ import java.util.List;
  * Time: 上午1:54
  */
 public class OAuth {
+    private static final String TAG = OAuth.class.getName();
     private String consumerKey;
     private String consumerSecret;
 
@@ -51,6 +54,7 @@ public class OAuth {
             params = new ArrayList<NameValuePair>();
         }
 
+
         List<Parameter> oauthHeaderParams = new ArrayList<Parameter>();
         oauthHeaderParams.add(new Parameter("oauth_consumer_key", consumerKey));
         oauthHeaderParams.add(new Parameter("oauth_signature_method", "HMAC-SHA1"));
@@ -60,17 +64,21 @@ public class OAuth {
         if (token != null) {
             oauthHeaderParams.add(new Parameter("oauth_token", token.getToken()));
         }
+        NLog.d(TAG, "params.size=" + params.size());
         List<Parameter> signBaseParams = new ArrayList<Parameter>(oauthHeaderParams.size() + params.size());
         signBaseParams.addAll(oauthHeaderParams);
         signBaseParams.addAll(toParamList(params));
+
         parseGetParameters(url, signBaseParams);
 
         StringBuilder base_elems = new StringBuilder();
         base_elems.append(httpMethod).append("&").append(encode(constructRequestURL(url))).append("&");
         base_elems.append(encode(normalizeRequestParameters(signBaseParams)));
+//        base_elems.append(normalizeRequestParameters(signBaseParams));
 
+        NLog.d(TAG, "baseString=" + base_elems.toString());
         String signatore = generateSignature(base_elems.toString(), token);
-
+        NLog.d(TAG, "sig=" + signatore);
         oauthHeaderParams.add(new Parameter("oauth_signature", signatore));
         return "OAuth " + encodeParameters(oauthHeaderParams, ",", true);
 
@@ -81,7 +89,7 @@ public class OAuth {
         int queryStart = url.indexOf("?");
         if (queryStart != -1) {
             String[] queryStrs = url.substring(queryStart + 1).split("&");
-            try{
+            try {
                 for (String query : queryStrs) {
                     String[] split = query.split("=");
                     if (split.length == 2) {
@@ -244,7 +252,7 @@ public class OAuth {
     }
 
 
-    public class Parameter implements Comparable{
+    public class Parameter implements Comparable {
         private String key;
         private String value;
 

@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.googolmo.fanfou.api.http.Response;
 import com.googolmo.fanfou.utils.JsonUtils;
+import com.googolmo.fanfou.utils.NLog;
 
 /**
  * User: googolmo
@@ -11,6 +12,7 @@ import com.googolmo.fanfou.utils.JsonUtils;
  * Time: 下午11:20
  */
 public class FanfouException extends Exception {
+    private static final String TAG = FanfouException.class.getName();
 
 
 //    private JSONObject json;
@@ -56,9 +58,9 @@ public class FanfouException extends Exception {
     public FanfouException(Response response) {
         this.status = response.getMessage();
         String res = response.getResponseContent();
-        if (res != null) {
+        if (res != null && !res.equals("")) {
             try {
-                JsonObject object = JsonUtils.parser(response.getResponseContent());
+                JsonObject object = JsonUtils.parser(res);
                 this.request = object.get("request").getAsString();
                 this.error = object.get("error").getAsString();
             } catch (JsonSyntaxException e) {

@@ -40,15 +40,6 @@ public class URLClient {
                 connection = (HttpURLConnection) aUrl.openConnection();
 //            }
             try {
-                connection.setDoInput(true);
-                if (method.name().equals("POST") || method.name().equals("PUT")) {
-                    connection.setDoOutput(true);
-                    if (params != null) {
-                        OutputStream os = connection.getOutputStream();
-                        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                        writer.write(getQuery(params));
-                    }
-                }
 
                 connection.setConnectTimeout(Constants.URL_CONNECTION_TIMEOUT);
                 connection.setReadTimeout(Constants.URL_READ_TIMEOUT);
@@ -57,15 +48,32 @@ public class URLClient {
                 connection.setRequestProperty("Accept-Encoding", "gzip");
                 connection.setRequestProperty("User-Agent", Constants.URL_USER_AGENT);
                 connection.setRequestProperty("Accept-Charset", "UTF-8");
-                connection.setRequestProperty("Connection", "keep-alive");
+                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//                connection.setRequestProperty("Connection", "keep-alive");
                 //TODO DNS解析
-
                 //设置Headers
                 if (headers != null) {
                     for (NameValuePair pair : headers) {
                         connection.setRequestProperty(pair.getName(), pair.getValue());
                     }
                 }
+
+                connection.setDoInput(true);
+                if (method.name().equals("POST") || method.name().equals("PUT")) {
+                    connection.setDoOutput(true);
+
+                    if (params != null) {
+                        OutputStream os = connection.getOutputStream();
+                        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                        writer.write(getQuery(params));
+                        writer.close();
+                        os.close();
+                    }
+                }
+
+
+
+
 
                 connection.connect();
 
