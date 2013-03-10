@@ -42,7 +42,7 @@ public class TimelineLoader extends AsyncTaskLoader<List<Status>> {
         this.maxId = maxId;
         this.mCount = count;
         this.mPage = page;
-        this.mData = data;
+//        this.mData = data;
         this.mType = type;
     }
 
@@ -52,14 +52,14 @@ public class TimelineLoader extends AsyncTaskLoader<List<Status>> {
             if (mUserId == null) {
                 mUserId = mProvider.getCurrentUserId();
             }
-            List<Status> statuses = new ArrayList<Status>();
+            mData = new ArrayList<Status>();
             if (mType == DB.STATUS_TYPE_HOMETLINE) {
-                statuses.addAll(mApi.getHomeTimeline(mUserId, mSinceId, maxId, mCount, mPage, false));
+                mData.addAll(mApi.getHomeTimeline(mUserId, mSinceId, maxId, mCount, mPage, false));
             } else {
-                statuses.addAll(mApi.getMentions(mSinceId, maxId, mCount, mPage, false));
+                mData.addAll(mApi.getMentions(mSinceId, maxId, mCount, mPage, false));
             }
 
-            return statuses;
+            return mData;
         } catch (FanfouException e) {
             e.printStackTrace();
             ErrorHandler.handlerError(getContext(), e, ErrorHandler.ShowType.TOAST, null);
@@ -70,11 +70,20 @@ public class TimelineLoader extends AsyncTaskLoader<List<Status>> {
     @Override
     protected void onStartLoading() {
         super.onStartLoading();
-        forceLoad();
+        if (mData == null) {
+            forceLoad();
+        }
+
     }
 
     @Override
     public void onCanceled(List<Status> data) {
         super.onCanceled(data);
+    }
+
+    @Override
+    protected void onStopLoading() {
+        super.onStopLoading();
+        cancelLoad();
     }
 }

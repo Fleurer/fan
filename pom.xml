@@ -86,6 +86,11 @@
 			<version>${android.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>support-v4</artifactId>
+            <version>${android-support.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.actionbarsherlock</groupId>
@@ -93,12 +98,6 @@
             <version>${sherlock.version}</version>
             <type>apklib</type>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.d.pulltorefresh</groupId>-->
-            <!--<artifactId>pulltorefresh</artifactId>-->
-            <!--<version>1.4.2-SNAPSHOT</version>-->
-            <!--<type>apklib</type>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>com.d.imageloader</groupId>
             <artifactId>loader</artifactId>

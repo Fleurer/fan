@@ -31,7 +31,10 @@
     <!--SharePreference KEYS-->
     <string name="sp_load_count">key_load_count</string>
     <string name="sp_load_count">key_max_count</string>
-    <string name="error_title">出错啦!</string>
-    <string name="sure">确定</string>
+    <string name="error_title">Error!</string>
+    <string name="sure">Sure</string>
     <string name="loading_mission_status">LOAD MISSING STATUS</string>
+    <string name="now_loading">now loading …</string>
+    <string name="load_result">%1$s new status</string>
+    <string name="result_no_new_statuses">no new statuses</string>
 </resources>

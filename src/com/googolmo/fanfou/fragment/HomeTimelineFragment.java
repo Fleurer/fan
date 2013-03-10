@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -27,6 +29,8 @@ import com.googolmo.fanfou.loader.DBLoader;
 import com.googolmo.fanfou.loader.TimelineLoader;
 import com.googolmo.fanfou.utils.NLog;
 import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,19 +54,31 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
     private int scrolledTop;
     private String mCurrentUserId;
 
+    private Crouton crouton;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mStatuses = new ArrayList<Status>();
         mAdapter = new TimelineAdapter(getSherlockActivity(), mStatuses);
         mCurrentUserId = mProvider.getCurrentUserId();
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+        setListAdapter(mAdapter);
+        getLoaderManager().initLoader(0, null, this).startLoading();
+        return v;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        NLog.d(TAG, "onViewCreated");
         mStatuses.clear();
-        setListAdapter(mAdapter);
+
 
 
         getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -128,7 +144,6 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
         }));
 
         setListShown(false);
-        getLoaderManager().initLoader(0, null, this).startLoading();
 
     }
 
@@ -150,8 +165,8 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
                 refresh(position);
             } else {
                 Intent intent = new Intent(getSherlockActivity(), StatusActivity.class);
-                NLog.d(TAG, status.getJsonString());
-                intent.putExtra(Constants.KEY_STATUS, status.getUser());
+//                NLog.d(TAG, status.getJsonString());
+                intent.putExtra(Constants.KEY_STATUS, status);
                 getSherlockActivity().startActivity(intent);
             }
 
@@ -241,9 +256,13 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
     public void onResume() {
         super.onResume();
         setHasOptionsMenu(true);
-//        this.scrolledIndex = getProvider().getHomeTLScrolledIndex();
-//        this.scrolledTop = getProvider().getHomeTLScrolledTop();
-//        getListView().scrollTo(scrolledIndex, scrolledTop);
+        NLog.d(TAG, "onResume()");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        NLog.d(TAG, "onStart()");
     }
 
     @Override
@@ -274,6 +293,8 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
 //            return new TimelineLoader(getActivity(), getProvider(), getApi(), null);
 //        }
         else{
+            crouton = Crouton.makeText(getActivity(), R.string.now_loading, Style.INFO);
+            crouton.show();
             String sinceId = null;
             String maxId = null;
             if (mLoadIndex == 0) {
@@ -291,6 +312,7 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
                     , maxId, mProvider.getLoadCount(), 0, mStatuses, DB.STATUS_TYPE_HOMETLINE);
         }
 
+
     }
 
     @Override
@@ -299,6 +321,7 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
         boolean isShow = true;
         boolean isSetPostion = false;
         int newPosition = 0;
+
         if (listLoader.getId() == 0) {
             if (statuses.size() < 1) {
                 isShow = false;
@@ -318,6 +341,13 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
             }
 
         } else if (listLoader.getId() == 1) {
+            if (statuses.size() > 0) {
+                crouton = Crouton.makeText(getActivity(), getActivity().getString(R.string.load_result, statuses.size()), Style.INFO);
+            } else {
+                crouton = Crouton.makeText(getActivity(), R.string.result_no_new_statuses, Style.INFO);
+            }
+
+            crouton.show();
             if (mLoadIndex == 0) {
                 newPosition = statuses.size() ;
                 if (statuses.size() < getProvider().getLoadCount()) {
@@ -332,16 +362,18 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
                     getProvider().addHomeTLLoadmoreMark(mCurrentUserId, statuses.size());
 
                     if (p != 0) {
-                        this.mStatuses.clear();
-                        this.mStatuses.addAll(this.mStatuses.subList(0, p + statuses.size() + 1));
+                        for (int i = statuses.size() + 1; i < this.mStatuses.size(); i ++) {
+                            this.mStatuses.remove(i);
+                        }
+
                     }
 
                 }
 
                 if (this.mStatuses.size() > getProvider().getMaxCount()) {
-                    this.mStatuses.clear();
-                    getProvider().addHomeTLLoadmoreMark(mCurrentUserId, 0);
-                    this.mStatuses.addAll(this.mStatuses.subList(0, getProvider().getMaxCount()));
+                    for (int i = getProvider().getMaxCount(); i < this.mStatuses.size(); i ++) {
+                        this.mStatuses.remove(i);
+                    }
                 }
             } else if(mLoadIndex == mStatuses.size() - 1) {
                 this.mStatuses.addAll(statuses);
@@ -404,6 +436,7 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
             this.scrolledTop = getProvider().getHomeTLScrolledTop();
             getListView().setSelectionFromTop(this.scrolledIndex, this.scrolledTop);
         }
+//        listLoader
 
     }
 

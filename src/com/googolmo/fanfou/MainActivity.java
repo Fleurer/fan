@@ -18,6 +18,8 @@ import com.googolmo.fanfou.fragment.MenuFragment;
 import com.googolmo.fanfou.module.MenuModule;
 import com.slidingmenu.lib.SlidingMenu;
 import com.slidingmenu.lib.app.SlidingFragmentActivity;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -122,6 +124,12 @@ public class MainActivity extends SlidingFragmentActivity{
 
     }
 
+//    public void setCrouton(CharSequence text, Style style){
+//        Crouton.makeText(this, text, style).show();
+//    }
+
+
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -174,6 +182,7 @@ public class MainActivity extends SlidingFragmentActivity{
     protected void onDestroy() {
 //        mFragmentList = null;
         super.onDestroy();
+        Crouton.cancelAllCroutons();
     }
 
     public void switchContent(MenuModule menuModule) {

@@ -63,7 +63,7 @@ public class User extends JData implements Parcelable{
         this.following = booleans[1];
         this.notifications = booleans[2];
 
-        this.status = in.readParcelable(Status.class.getClassLoader());
+//        this.status = in.readParcelable(Status.class.getClassLoader());
     }
 
 
@@ -80,7 +80,7 @@ public class User extends JData implements Parcelable{
         out.writeIntArray(new int[]{followers_count, friends_count, favourites_count
                 , statuses_count, utc_offset});
         out.writeBooleanArray(new boolean[]{isProtected, following, notifications});
-        out.writeParcelable(status, i);
+//        out.writeParcelable(status, i);
 
     }
 

@@ -332,7 +332,7 @@ public class MentionFragment extends BaseListFragment implements LoaderManager.L
 
                     if (p != 0) {
                         this.mStatuses.clear();
-                        this.mStatuses.addAll(this.mStatuses.subList(0, p + statuses.size() + 1));
+                        this.mStatuses.addAll(this.mStatuses.subList(0, statuses.size() + 1));
                     }
 
                 }
