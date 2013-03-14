@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
@@ -116,7 +117,7 @@ public class URLClient {
         int code = 200;
         try{
             URL aUrl = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) aUrl.openConnection();
+            HttpURLConnection connection = (HttpURLConnection)aUrl.openConnection();
             try{
                 connection.setUseCaches(false);
                 connection.setConnectTimeout(Constants.URL_CONNECTION_TIMEOUT);
