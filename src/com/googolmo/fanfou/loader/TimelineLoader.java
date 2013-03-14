@@ -8,7 +8,7 @@ import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 import com.googolmo.fanfou.api.Api;
 import com.googolmo.fanfou.api.FanfouException;
-import com.googolmo.fanfou.api.module.Status;
+import com.googolmo.fanfou.api.model.Status;
 import com.googolmo.fanfou.data.DB;
 import com.googolmo.fanfou.data.Provider;
 import com.googolmo.fanfou.utils.ErrorHandler;

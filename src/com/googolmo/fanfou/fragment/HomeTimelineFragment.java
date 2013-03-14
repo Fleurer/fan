@@ -21,7 +21,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.googolmo.fanfou.Constants;
 import com.googolmo.fanfou.R;
 import com.googolmo.fanfou.adapter.TimelineAdapter;
-import com.googolmo.fanfou.api.module.Status;
+import com.googolmo.fanfou.api.model.Status;
 import com.googolmo.fanfou.app.ShareActivity;
 import com.googolmo.fanfou.app.StatusActivity;
 import com.googolmo.fanfou.data.DB;
@@ -40,7 +40,7 @@ import java.util.List;
  * Date: 13-3-9
  * Time: 上午11:39
  */
-public class HomeTimelineFragment extends BaseListFragment implements LoaderManager.LoaderCallbacks<List<Status>>{
+public class HomeTimelineFragment extends BaseListFragment implements LoaderManager.LoaderCallbacks<List<Status>>, CallbackFragment{
     private static final String TAG = HomeTimelineFragment.class.getName();
 //    private ProgressBar mPb;
     private TimelineAdapter mAdapter;
@@ -468,4 +468,9 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
     }
 
 
+    @Override
+    public void load() {
+
+//        getLoaderManager().restartLoader(0, null, this).forceLoad();
+    }
 }

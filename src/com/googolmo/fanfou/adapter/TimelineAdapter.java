@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.googolmo.fanfou.R;
-import com.googolmo.fanfou.api.module.Status;
+import com.googolmo.fanfou.api.model.Status;
 import com.googolmo.fanfou.utils.app.DateUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -91,7 +91,8 @@ public class TimelineAdapter extends BaseAdapter{
             ImageLoader.getInstance().displayImage(status.getUser().getProfile_image_url(), holder.header, headerOptions);
             holder.username.setText(status.getUser().getName());
             try {
-                holder.status.setText(java.net.URLDecoder.decode(status.getText(), "UTF-8"));
+                holder.status.setText(status.getText());
+//                holder.status.setText(java.net.URLDecoder.decode(status.getText(), "UTF-8"));
             } catch (Exception e) {
                 e.printStackTrace();
                 holder.status.setText(status.getText());

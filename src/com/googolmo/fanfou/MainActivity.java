@@ -18,10 +18,12 @@ import com.actionbarsherlock.view.MenuItem;
 import com.googolmo.fanfou.api.http.Session;
 import com.googolmo.fanfou.app.OAuthActivity;
 import com.googolmo.fanfou.data.Provider;
+import com.googolmo.fanfou.fragment.CallbackFragment;
 import com.googolmo.fanfou.fragment.HomeTimelineFragment;
 import com.googolmo.fanfou.fragment.MentionFragment;
 import com.googolmo.fanfou.fragment.MenuFragment;
 import com.googolmo.fanfou.model.MenuModel;
+import com.googolmo.fanfou.utils.NLog;
 import com.slidingmenu.lib.SlidingMenu;
 import com.slidingmenu.lib.app.SlidingFragmentActivity;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -74,7 +76,7 @@ public class MainActivity extends SlidingFragmentActivity{
         this.mViewPager = (ViewPager) findViewById(R.id.viewpager);
 
 
-        List<MenuModel> fregments = new ArrayList<MenuModel>();
+        final List<MenuModel> fregments = new ArrayList<MenuModel>();
         fregments.add(new MenuModel(0, getString(R.string.home_timeline), HomeTimelineFragment.class.getName(), null));
         fregments.add(new MenuModel(1, getString(R.string.mentions), MentionFragment.class.getName(), null));
 
@@ -101,7 +103,11 @@ public class MainActivity extends SlidingFragmentActivity{
             }
 
             @Override
-            public void onPageScrollStateChanged(int i) {
+            public void onPageScrollStateChanged(int state) {
+                if (state == ViewPager.SCROLL_STATE_IDLE){
+                    NLog.d(TAG, "scroll idle");
+                    ((CallbackFragment)((MainAdapter)mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem())).load();
+                }
             }
         });
 

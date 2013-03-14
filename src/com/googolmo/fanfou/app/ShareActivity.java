@@ -6,14 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -27,7 +23,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.googolmo.fanfou.api.Api;
 import com.googolmo.fanfou.api.FanfouException;
-import com.googolmo.fanfou.api.module.Status;
+import com.googolmo.fanfou.api.model.Status;
 import com.googolmo.fanfou.utils.ErrorHandler;
 import com.googolmo.fanfou.utils.NLog;
 import com.googolmo.fanfou.BaseActivity;
@@ -39,10 +35,7 @@ import com.googolmo.fanfou.utils.graphics.BitmapUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
 
 /**
  * User: googolmo
@@ -405,7 +398,7 @@ public class ShareActivity extends BaseActivity {
         }
 
         @Override
-        protected com.googolmo.fanfou.api.module.Status doInBackground(Void... voids) {
+        protected com.googolmo.fanfou.api.model.Status doInBackground(Void... voids) {
             try {
                 if (bitmap != null) {
 
@@ -449,7 +442,7 @@ public class ShareActivity extends BaseActivity {
         }
 
         @Override
-        protected void onPostExecute(com.googolmo.fanfou.api.module.Status status) {
+        protected void onPostExecute(com.googolmo.fanfou.api.model.Status status) {
             super.onPostExecute(status);
             clearDialog();
             if (status != null) {

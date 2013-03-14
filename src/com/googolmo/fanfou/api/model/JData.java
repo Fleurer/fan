@@ -2,7 +2,7 @@
  * Copyright (c) 2013. By @GoogolMo
  */
 
-package com.googolmo.fanfou.api.module;
+package com.googolmo.fanfou.api.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,4 +1,4 @@
-package com.googolmo.fanfou.api.module;
+package com.googolmo.fanfou.api.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

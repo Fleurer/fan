@@ -14,7 +14,7 @@ import com.googolmo.fanfou.MainActivity;
 import com.googolmo.fanfou.api.FanfouException;
 import com.googolmo.fanfou.api.http.Session;
 import com.googolmo.fanfou.api.http.Token;
-import com.googolmo.fanfou.api.module.User;
+import com.googolmo.fanfou.api.model.User;
 import com.googolmo.fanfou.utils.ErrorHandler;
 import com.googolmo.fanfou.utils.NLog;
 import com.googolmo.fanfou.Constants;

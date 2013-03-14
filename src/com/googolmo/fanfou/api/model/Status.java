@@ -1,4 +1,4 @@
-package com.googolmo.fanfou.api.module;
+package com.googolmo.fanfou.api.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -48,6 +48,7 @@ public class Status extends JData implements Parcelable{
         this.repost_screen_name = s[10];
 
         boolean[] b = new boolean[2];
+        in.readBooleanArray(b);
         this.favorited = b[0];
         this.truncated = b[1];
 
@@ -77,8 +78,7 @@ public class Status extends JData implements Parcelable{
 
     }
 
-    public static final Creator<Status> CREATOR
-            = new Creator<Status>() {
+    public static final Creator<Status> CREATOR = new Creator<Status>() {
         @Override
         public Status createFromParcel(Parcel source) {
             return new Status(source);

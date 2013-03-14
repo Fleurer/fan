@@ -19,7 +19,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.googolmo.fanfou.Constants;
 import com.googolmo.fanfou.R;
 import com.googolmo.fanfou.adapter.TimelineAdapter;
-import com.googolmo.fanfou.api.module.Status;
+import com.googolmo.fanfou.api.model.Status;
 import com.googolmo.fanfou.app.ShareActivity;
 import com.googolmo.fanfou.app.StatusActivity;
 import com.googolmo.fanfou.data.DB;
@@ -38,7 +38,7 @@ import java.util.List;
  * Date: 13-3-9
  * Time: 上午11:39
  */
-public class MentionFragment extends BaseListFragment implements LoaderManager.LoaderCallbacks<List<Status>>{
+public class MentionFragment extends BaseListFragment implements LoaderManager.LoaderCallbacks<List<Status>>, CallbackFragment{
     private static final String TAG = MentionFragment.class.getName();
 //    private ProgressBar mPb;
     private TimelineAdapter mAdapter;
@@ -139,7 +139,6 @@ public class MentionFragment extends BaseListFragment implements LoaderManager.L
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getLoaderManager().initLoader(0, null, this);
-        loadData();
     }
 
     @Override
@@ -244,9 +243,10 @@ public class MentionFragment extends BaseListFragment implements LoaderManager.L
     public void onResume() {
         super.onResume();
         setHasOptionsMenu(true);
-//        this.scrolledIndex = getProvider().getHomeMTScrolledIndex();
-//        this.scrolledTop = getProvider().getHomeMTScrolledTop();
-//        getListView().scrollTo(scrolledIndex, scrolledTop);
+        NLog.d(TAG, "onResume");
+        if (mStatuses.size() < 1) {
+            getLoaderManager().restartLoader(0, null, this).forceLoad();
+        }
     }
 
     @Override
@@ -264,6 +264,7 @@ public class MentionFragment extends BaseListFragment implements LoaderManager.L
 
     private void loadData() {
     }
+
 
 
 
@@ -451,4 +452,11 @@ public class MentionFragment extends BaseListFragment implements LoaderManager.L
     }
 
 
+    @Override
+    public void load() {
+//        if (mStatuses  == null || mStatuses.size() < 1) {
+////            getLoaderManager().restartLoader(0, null, this).forceLoad();
+//        }
+
+    }
 }

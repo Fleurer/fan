@@ -6,8 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.googolmo.fanfou.api.module.Status;
-import com.googolmo.fanfou.api.module.User;
+import com.googolmo.fanfou.api.model.Status;
+import com.googolmo.fanfou.api.model.User;
 import com.googolmo.fanfou.utils.NLog;
 
 import java.util.ArrayList;

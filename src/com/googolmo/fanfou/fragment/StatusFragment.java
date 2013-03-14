@@ -15,16 +15,14 @@ import com.actionbarsherlock.ActionBarSherlock;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.googolmo.fanfou.api.module.Status;
+import com.googolmo.fanfou.api.model.Status;
 import com.googolmo.fanfou.Constants;
 import com.googolmo.fanfou.R;
-import com.googolmo.fanfou.api.module.User;
+import com.googolmo.fanfou.api.model.User;
 import com.googolmo.fanfou.app.ShareActivity;
 import com.googolmo.fanfou.app.ViewImageActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
@@ -82,7 +80,6 @@ public class StatusFragment extends BaseFragment implements ActionBarSherlock.On
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        User u = getArguments().getParcelable(Constants.KEY_STATUS);
         mStatus = getArguments().getParcelable(Constants.KEY_STATUS);
 
         setHasOptionsMenu(true);

@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import com.google.gson.Gson;
 import com.googolmo.fanfou.api.http.Session;
-import com.googolmo.fanfou.api.module.User;
+import com.googolmo.fanfou.api.model.User;
 import com.googolmo.fanfou.utils.NLog;
 import com.googolmo.fanfou.R;
 
