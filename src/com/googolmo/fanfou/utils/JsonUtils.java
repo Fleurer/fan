@@ -23,6 +23,7 @@ public class JsonUtils {
             mGson = new GsonBuilder()
                     .serializeNulls()
                     .disableHtmlEscaping()
+                    .enableComplexMapKeySerialization()
                     .excludeFieldsWithoutExposeAnnotation()
                     .enableComplexMapKeySerialization()
                     .create();

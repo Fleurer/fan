@@ -18,6 +18,7 @@ import com.googolmo.fanfou.api.model.Status;
 import com.googolmo.fanfou.utils.app.DateUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.util.List;
 
@@ -91,8 +92,7 @@ public class TimelineAdapter extends BaseAdapter{
             ImageLoader.getInstance().displayImage(status.getUser().getProfile_image_url(), holder.header, headerOptions);
             holder.username.setText(status.getUser().getName());
             try {
-                holder.status.setText(status.getText());
-//                holder.status.setText(java.net.URLDecoder.decode(status.getText(), "UTF-8"));
+                holder.status.setText(StringEscapeUtils.unescapeHtml4(status.getText()));
             } catch (Exception e) {
                 e.printStackTrace();
                 holder.status.setText(status.getText());

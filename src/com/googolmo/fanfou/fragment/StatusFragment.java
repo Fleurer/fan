@@ -21,8 +21,10 @@ import com.googolmo.fanfou.R;
 import com.googolmo.fanfou.api.model.User;
 import com.googolmo.fanfou.app.ShareActivity;
 import com.googolmo.fanfou.app.ViewImageActivity;
+import com.googolmo.fanfou.utils.NLog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.UnsupportedEncodingException;
 
@@ -81,6 +83,7 @@ public class StatusFragment extends BaseFragment implements ActionBarSherlock.On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mStatus = getArguments().getParcelable(Constants.KEY_STATUS);
+        NLog.d(TAG, "status=" + mStatus.toString());
 
         setHasOptionsMenu(true);
 
@@ -111,12 +114,14 @@ public class StatusFragment extends BaseFragment implements ActionBarSherlock.On
             mUsername.setText(mStatus.getUser().getName());
             mUserid.setText(mStatus.getUser().getId());
 
-            try {
-                mTvStatus.setText(java.net.URLDecoder.decode(mStatus.getText(), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-                mTvStatus.setText(mStatus.getText());
-            }
+//            try {
+
+                mTvStatus.setText(StringEscapeUtils.unescapeHtml4(mStatus.getText()));
+//                mTvStatus.setText(java.net.URLDecoder.decode(mStatus.getText(), "UTF-8"));
+//            } catch (UnsupportedEncodingException e) {
+//                e.printStackTrace();
+//                mTvStatus.setText(mStatus.getText());
+//            }
 
             String source = mStatus.getCreated_at() + "via: " + mStatus.getSource();
             mMore.setText(Html.fromHtml(source));
