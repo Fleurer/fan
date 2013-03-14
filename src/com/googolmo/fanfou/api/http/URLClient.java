@@ -52,7 +52,6 @@ public class URLClient {
                 connection.setRequestProperty("User-Agent", Constants.URL_USER_AGENT);
                 connection.setRequestProperty("Accept-Charset", "UTF-8");
                 connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-//                connection.setRequestProperty("Connection", "keep-alive");
                 //TODO DNS解析
                 //设置Headers
                 if (headers != null) {
@@ -119,12 +118,12 @@ public class URLClient {
             URL aUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) aUrl.openConnection();
             try{
-//                connection.setUseCaches(false);
+                connection.setUseCaches(false);
                 connection.setConnectTimeout(Constants.URL_CONNECTION_TIMEOUT);
                 connection.setReadTimeout(Constants.URL_READ_TIMEOUT);
                 connection.setRequestMethod(method.name());
 
-//                connection.setRequestProperty("Accept-Encoding", "gzip");
+                connection.setRequestProperty("Accept-Encoding", "gzip");
                 connection.setRequestProperty("User-Agent", Constants.URL_USER_AGENT);
                 connection.setRequestProperty("Accept-Charset", "UTF-8");
                 connection.setRequestProperty("Connection", "keep-alive");
@@ -154,20 +153,15 @@ public class URLClient {
 
 
                 StringBuilder formDataBuffer = new StringBuilder();
-//                for (MultipartParameter parameter : parameters) {
 
                     formDataBuffer.append(BOUNDARY)
                             .append("Content-Disposition:form-data;name=\"")
                             .append(parameter.getName())
                             .append("\";filename=\"")
-                            .append(parameter.getName() + "12")
-                            .append(".png")
+                            .append(parameter.getName())
                             .append("\"\r\n")
                             .append("Content-Type:")
                             .append("image/").append(parameter.getContentType())
-//                            .append("\r\n")
-//                            .append("Content-Transfer-Encoding: binary")
-//                            + parameter.getContentType()
                             .append("\r\n\r\n");
 
                 NLog.d(TAG, formDataBuffer.toString());
@@ -175,7 +169,6 @@ public class URLClient {
 
                 NLog.d(TAG, Arrays.toString(endData));
                 byte[] data = parameter.getContent();
-//                byte[] data = BASE64Encoder.encode(parameter.getContent()).getBytes();
                 connection.setRequestProperty("Content-Length", String.valueOf(formDataBuilder.toString().getBytes().length
                         + formDataBuffer.toString().getBytes().length + data.length + endData.length));
                 connection.setDoInput(true);
@@ -190,7 +183,6 @@ public class URLClient {
                 out.write(formDataBuilder.toString().getBytes());
                 out.write(formDataBuffer.toString().getBytes());
                 out.write(data);
-//                outputStream.write(endData);
 
                 out.write(endData);
                 out.flush();
