@@ -7,6 +7,7 @@ package com.googolmo.fanfou.api;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.googolmo.fanfou.api.http.Method;
+import com.googolmo.fanfou.api.http.MultipartParameter;
 import com.googolmo.fanfou.api.http.OAuth;
 import com.googolmo.fanfou.api.http.RequestParam;
 import com.googolmo.fanfou.api.http.Response;
@@ -18,6 +19,8 @@ import com.googolmo.fanfou.utils.JsonUtils;
 import com.googolmo.fanfou.utils.NLog;
 import org.apache.http.NameValuePair;
 
+import java.io.File;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
@@ -227,6 +230,76 @@ public class Api {
     }
 
 
+    public Status publish(String status, String in_reply_to_status_id, String in_reply_to_user_id, String repost_status_id,
+                          String location, InputStream photo, boolean isLite) throws FanfouException {
+        String url = getAbsoluteUrl("/photos/upload.json");
+        List<NameValuePair> p = new ArrayList<NameValuePair>();
+        p.add(new RequestParam("status", status));
+        if (in_reply_to_status_id != null && !in_reply_to_status_id.equals("")) {
+            p.add(new RequestParam("in_reply_to_status_id", in_reply_to_status_id));
+        }
+        if (in_reply_to_user_id != null && !in_reply_to_user_id.equals("")) {
+            p.add(new RequestParam("in_reply_to_user_id", in_reply_to_user_id));
+        }
+        if (repost_status_id != null && !repost_status_id.equals("")) {
+            p.add(new RequestParam("repost_status_id", repost_status_id));
+        }
+        if (location != null) {
+            p.add(new RequestParam("location", location));
+        }
+        if (isLite) {
+            p.add(new RequestParam("mode", "lite"));
+        }
+        return mGson.fromJson(post(url, p, true), Status.class);
+    }
+
+    public Status publish(String status, String in_reply_to_status_id, String in_reply_to_user_id, String repost_status_id,
+                          String location, File photo, boolean isLite) throws FanfouException {
+        String url = getAbsoluteUrl("/photos/upload.json");
+        List<NameValuePair> p = new ArrayList<NameValuePair>();
+        p.add(new RequestParam("status", status));
+        if (in_reply_to_status_id != null && !in_reply_to_status_id.equals("")) {
+            p.add(new RequestParam("in_reply_to_status_id", in_reply_to_status_id));
+        }
+        if (in_reply_to_user_id != null && !in_reply_to_user_id.equals("")) {
+            p.add(new RequestParam("in_reply_to_user_id", in_reply_to_user_id));
+        }
+        if (repost_status_id != null && !repost_status_id.equals("")) {
+            p.add(new RequestParam("repost_status_id", repost_status_id));
+        }
+        if (location != null) {
+            p.add(new RequestParam("location", location));
+        }
+        if (isLite) {
+            p.add(new RequestParam("mode", "lite"));
+        }
+        return mGson.fromJson(post(url, p, true), Status.class);
+    }
+
+    public Status publish(String status, String in_reply_to_status_id, String in_reply_to_user_id, String repost_status_id,
+                          String location, byte[] photo, boolean isLite) throws FanfouException {
+        String url = getAbsoluteUrl("/photos/upload.json");
+        List<NameValuePair> p = new ArrayList<NameValuePair>();
+        p.add(new RequestParam("status", status));
+        if (in_reply_to_status_id != null && !in_reply_to_status_id.equals("")) {
+            p.add(new RequestParam("in_reply_to_status_id", in_reply_to_status_id));
+        }
+        if (in_reply_to_user_id != null && !in_reply_to_user_id.equals("")) {
+            p.add(new RequestParam("in_reply_to_user_id", in_reply_to_user_id));
+        }
+        if (repost_status_id != null && !repost_status_id.equals("")) {
+            p.add(new RequestParam("repost_status_id", repost_status_id));
+        }
+        if (location != null) {
+            p.add(new RequestParam("location", location));
+        }
+        if (isLite) {
+            p.add(new RequestParam("mode", "lite"));
+        }
+        MultipartParameter parameter = new MultipartParameter("photo", "PNG", photo);
+        return mGson.fromJson(post(url, p, true, parameter), Status.class);
+    }
+
     /**
      *
      * @param url
@@ -286,6 +359,7 @@ public class Api {
             headers = new ArrayList<NameValuePair>();
             String sign = mOAuth.getOAuthSignature(Method.POST.name(), url, params, this.oAuthToken);
             headers.add(new RequestParam("Authorization", sign));
+
         }
         return post(url, params, headers);
     }
@@ -293,6 +367,34 @@ public class Api {
     private String post(String url, List<NameValuePair> params, List<NameValuePair> headers) throws FanfouException {
 
         Response response = mClient.fetch(url, Method.POST, params, headers);
+        if (response.getResponseCode() > 300) {
+            //Error
+            NLog.d(TAG, "error code=" + response.getResponseCode());
+            NLog.d(TAG, "respose=[" + response.getResponseContent() + "]");
+            throw new FanfouException(response);
+        } else {
+            NLog.d(TAG, "respose=[" + response.getResponseContent() + "]");
+            return response.getResponseContent();
+        }
+    }
+
+    private String post(String url, List<NameValuePair> params, MultipartParameter parameter) throws FanfouException {
+        return post(url, params, true, parameter);
+    }
+
+    private String post(String url, List<NameValuePair> params, boolean isAuth, MultipartParameter parameter) throws FanfouException {
+        List<NameValuePair> headers = null;
+        if (isAuth) {
+            headers = new ArrayList<NameValuePair>();
+            String sign = mOAuth.getOAuthSignature(Method.POST.name(), url, null, this.oAuthToken);
+            headers.add(new RequestParam("Authorization", sign));
+        }
+        return post(url, params, headers, parameter);
+    }
+
+    private String post(String url, List<NameValuePair> params, List<NameValuePair> headers, MultipartParameter parameter) throws FanfouException {
+
+        Response response = mClient.fetch(url, Method.POST, params, headers, parameter);
         if (response.getResponseCode() > 300) {
             //Error
             NLog.d(TAG, "error code=" + response.getResponseCode());

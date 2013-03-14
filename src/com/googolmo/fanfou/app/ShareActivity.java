@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -36,7 +37,12 @@ import com.googolmo.fanfou.utils.app.ExternalStorageUtils;
 import com.googolmo.fanfou.utils.app.IntentUtils;
 import com.googolmo.fanfou.utils.graphics.BitmapUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 /**
  * User: googolmo
@@ -322,9 +328,12 @@ public class ShareActivity extends BaseActivity {
 //                    } catch (FileNotFoundException e) {
 //                        e.printStackTrace();
 //                    }
+                    PublishTask task = new PublishTask(this, getApi(), mShareText, mReplyId
+                            , mReplyUserid, mRepostId, mLocaton, mBitmap);
+                    task.execute();
                 } else {
                     PublishTask task = new PublishTask(this, getApi(), mShareText, mReplyId
-                              , mReplyUserid, mRepostId, mLocaton);
+                            , mReplyUserid, mRepostId, mLocaton, null);
                     task.execute();
 
                 }
@@ -378,11 +387,12 @@ public class ShareActivity extends BaseActivity {
         private String replyUserId;
         private String repostStatusId;
         private String location;
+        private Bitmap bitmap;
         private Api mApi;
         private Context mContext;
 
         public PublishTask(Context context, Api api, String status, String in_reply_to_status_id, String in_reply_to_user_id, String repost_status_id,
-                             String location) {
+                           String location, Bitmap bitmap) {
             super();
             this.mContext = context;
             this.status = status;
@@ -391,15 +401,43 @@ public class ShareActivity extends BaseActivity {
             this.repostStatusId = repost_status_id;
             this.location = location;
             this.mApi = api;
+            this.bitmap = bitmap;
         }
 
         @Override
         protected com.googolmo.fanfou.api.module.Status doInBackground(Void... voids) {
             try {
-                return this.mApi.publish(status, replyStatusId, replyUserId, repostStatusId, location, false);
+                if (bitmap != null) {
+
+//                    int bytes = bitmap.getWidth()*bitmap.getHeight()*4; //calculate how many bytes our image consists of. Use a different value than 4 if you don't use 32bit images.
+//
+//                    ByteBuffer buffer = ByteBuffer.allocate(bytes); //Create a new buffer
+//                    bitmap.copyPixelsToBuffer(buffer); //Move the byte data to the buffer
+//
+//                    byte[] array = buffer.array();
+
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                    try {
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream);
+
+                        byte[] photo = stream.toByteArray();
+
+//                    } finally {
+                        stream.close();
+                    bitmap.recycle();
+                    NLog.d(TAG, "photo.size=" + photo.length);
+//                    }
+                    return this.mApi.publish(status, replyStatusId, replyUserId, repostStatusId, location, photo, false);
+
+                } else {
+                    return this.mApi.publish(status, replyStatusId, replyUserId, repostStatusId, location, false);
+                }
+
             } catch (FanfouException e) {
                 e.printStackTrace();
                 ErrorHandler.handlerError(mContext, e, ErrorHandler.ShowType.TOAST, null);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
             return null;
         }
@@ -422,52 +460,4 @@ public class ShareActivity extends BaseActivity {
         }
     }
 
-
-//    private class UpdateHandler extends JsonHttpResponseHandler {
-//
-//        @Override
-//        public void onStart() {
-//            super.onStart();
-//            showProgress();
-//        }
-//
-//        @Override
-//        public void onFinish() {
-//            super.onFinish();
-//            clearDialog();
-//        }
-//
-//        @Override
-//        public void onSuccess(JSONObject response) {
-//            super.onSuccess(response);
-//            NLog.d(TAG, response.toString());
-//            Toast.makeText(ShareActivity.this, R.string.update_success, Toast.LENGTH_SHORT).show();
-//
-//            setResult(RESULT_OK);
-//            finish();
-//        }
-//
-//        @Override
-//        public void onFailure(Throwable e, JSONObject errorResponse) {
-//            super.onFailure(e, errorResponse);
-//            e.printStackTrace();
-//            NLog.e(TAG, errorResponse.toString());
-//            if (errorResponse != null) {
-//                FanfouException ex = new FanfouException(errorResponse);
-//                Toast.makeText(ShareActivity.this, ex.getError(), Toast.LENGTH_LONG).show();
-//            }
-//
-//
-//        }
-//
-//        @Override
-//        public void onFailure(Throwable error, String content) {
-//            super.onFailure(error, content);
-//            NLog.e(TAG, content);
-//            FanfouException ex = new FanfouException(error);
-//            Toast.makeText(ShareActivity.this, ex.getError(), Toast.LENGTH_LONG).show();
-//        }
-//
-//
-//    }
 }
