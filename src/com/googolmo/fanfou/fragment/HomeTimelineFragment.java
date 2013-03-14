@@ -69,7 +69,6 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
         setListAdapter(mAdapter);
-        getLoaderManager().initLoader(0, null, this).startLoading();
         return v;
     }
 
@@ -150,7 +149,7 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadData();
+        getLoaderManager().initLoader(0, null, this).forceLoad();
     }
 
     @Override
@@ -278,9 +277,6 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
         super.onDestroy();
     }
 
-    private void loadData() {
-    }
-
 
 
     @Override
@@ -297,17 +293,20 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
             crouton.show();
             String sinceId = null;
             String maxId = null;
-            if (mLoadIndex == 0) {
-                if (mStatuses.size() > mLoadIndex) {
-                    sinceId = mStatuses.get(mLoadIndex).getId();
-                }
+            if (mStatuses != null && mStatuses.size() > 0) {
+                if (mLoadIndex == 0) {
+                    if (mStatuses.size() > mLoadIndex) {
+                        sinceId = mStatuses.get(mLoadIndex).getId();
+                    }
 
-            } else if (mLoadIndex == mStatuses.size() - 1) {
-                maxId = mStatuses.get(mLoadIndex).getId();
-            } else {
-                maxId = mStatuses.get(mLoadIndex - 1).getId();
-                sinceId = mStatuses.get(mLoadIndex + 1).getId();
+                } else if (mLoadIndex == mStatuses.size() - 1) {
+                    maxId = mStatuses.get(mLoadIndex).getId();
+                } else {
+                    maxId = mStatuses.get(mLoadIndex - 1).getId();
+                    sinceId = mStatuses.get(mLoadIndex + 1).getId();
+                }
             }
+
             return new TimelineLoader(getActivity(), getProvider(), getApi(), null, sinceId
                     , maxId, mProvider.getLoadCount(), 0, mStatuses, DB.STATUS_TYPE_HOMETLINE);
         }
@@ -325,7 +324,7 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
         if (listLoader.getId() == 0) {
             if (statuses.size() < 1) {
                 isShow = false;
-                getLoaderManager().restartLoader(1, null, this);
+                getLoaderManager().restartLoader(1, null, this).forceLoad();
             } else {
                 this.mStatuses.clear();
 
@@ -450,7 +449,7 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
 
     private void refresh(int index) {
         mLoadIndex = index;
-        getLoaderManager().restartLoader(1, null, this);
+        getLoaderManager().restartLoader(1, null, this).forceLoad();
     }
 
     private void refresh() {
@@ -465,7 +464,7 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
         else {
             mLoadIndex = 0;
         }
-        getLoaderManager().restartLoader(1, null, this);
+        getLoaderManager().restartLoader(1, null, this).forceLoad();
     }
 
 

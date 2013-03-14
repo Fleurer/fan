@@ -8,11 +8,11 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.googolmo.fanfou.utils.NLog;
 import com.googolmo.fanfou.Constants;
+import com.googolmo.fanfou.model.MenuModel;
+import com.googolmo.fanfou.utils.NLog;
 import com.googolmo.fanfou.MainActivity;
 import com.googolmo.fanfou.R;
-import com.googolmo.fanfou.module.MenuModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class MenuFragment extends BaseFragment{
 
     private ListView mListView;
 
-    private List<MenuModule> mMenuList;
+    private List<MenuModel> mMenuList;
     private MenuListAdapter mAdapter;
 
     @Override
@@ -42,10 +42,7 @@ public class MenuFragment extends BaseFragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMenuList = new ArrayList<MenuModule>();
-        mMenuList.add(new MenuModule(getString(R.string.home_timeline), HomeTimelineFragment.class.getName(), null));
-
-        mMenuList.add(new MenuModule(getString(R.string.mentions), MentionFragment.class.getName(), null));
+        mMenuList = getArguments().getParcelableArrayList(Constants.KEY_MENULIST);
 
 
         mAdapter = new MenuListAdapter();
@@ -64,21 +61,21 @@ public class MenuFragment extends BaseFragment{
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                MenuModule module = (MenuModule)(adapterView.getAdapter().getItem(i));
-                NLog.d(TAG, "module=" + module.getTitle());
+                MenuModel module = (MenuModel)(adapterView.getAdapter().getItem(i));
+                NLog.d(TAG, "model=" + module.getTitle());
                 switchFragment(module);
             }
         });
 
     }
 
-    private void switchFragment(MenuModule menuModule) {
+    private void switchFragment(MenuModel menuModel) {
         if (getActivity() == null) {
             return;
         }
         if (getActivity() instanceof MainActivity) {
             MainActivity mainActivity = (MainActivity)getActivity();
-            mainActivity.switchContent(menuModule);
+            mainActivity.switchContent(menuModel);
         }
 
     }
@@ -112,7 +109,7 @@ public class MenuFragment extends BaseFragment{
             } else {
                 viewHolder = (ViewHolder)convertView.getTag();
             }
-            MenuModule item = (MenuModule)getItem(position);
+            MenuModel item = (MenuModel)getItem(position);
             viewHolder.content.setText(item.getTitle());
             return convertView;
         }

@@ -71,7 +71,7 @@ public class TimelineLoader extends AsyncTaskLoader<List<Status>> {
     protected void onStartLoading() {
         super.onStartLoading();
         if (mData == null) {
-            forceLoad();
+//            forceLoad();
         }
 
     }

@@ -47,9 +47,6 @@ public class DBLoader extends AsyncTaskLoader<List<Status>> {
     protected void onStartLoading() {
         super.onStartLoading();
         NLog.d(TAG, "onStartLoading");
-        if (mData == null) {
-            forceLoad();
-        }
 
     }
 

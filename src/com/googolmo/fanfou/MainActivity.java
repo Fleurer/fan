@@ -4,8 +4,13 @@ package com.googolmo.fanfou;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
+import android.view.ViewGroup;
 import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -14,27 +19,32 @@ import com.googolmo.fanfou.api.http.Session;
 import com.googolmo.fanfou.app.OAuthActivity;
 import com.googolmo.fanfou.data.Provider;
 import com.googolmo.fanfou.fragment.HomeTimelineFragment;
+import com.googolmo.fanfou.fragment.MentionFragment;
 import com.googolmo.fanfou.fragment.MenuFragment;
-import com.googolmo.fanfou.module.MenuModule;
+import com.googolmo.fanfou.model.MenuModel;
 import com.slidingmenu.lib.SlidingMenu;
 import com.slidingmenu.lib.app.SlidingFragmentActivity;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends SlidingFragmentActivity{
     private static final String TAG = Constants.getTAG(MainActivity.class.getName());
 
+    private static final String KEY_VIEWPAGER_POSITION = "viewpager_position";
+
     private ActionBar mActionBar;
-//    private ViewPager mViewPager;
-    private Fragment mContent;
+    private ViewPager mViewPager;
+    private int mViewPagerPostion;
 
     private Map<String, Fragment> mFragments;
     protected Provider mProvider;
 
 //    TabsAdapter mAdapter;
+    private MainAdapter mAdapter;
 
     /**
      * Called when the activity is first created.
@@ -43,8 +53,8 @@ public class MainActivity extends SlidingFragmentActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.main);
         mActionBar = getSupportActionBar();
-        mFragments = new HashMap<String, Fragment>();
 
         this.mProvider = ((BaseApplication) getApplication()).getProvider();
         if (this.mProvider.getCurrentUser() != null && !this.mProvider.getCurrentUserId().equals("")) {
@@ -61,30 +71,47 @@ public class MainActivity extends SlidingFragmentActivity{
             return;
         }
 
+        this.mViewPager = (ViewPager) findViewById(R.id.viewpager);
 
 
-        if (savedInstanceState != null) {
-            mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
-        }
+        List<MenuModel> fregments = new ArrayList<MenuModel>();
+        fregments.add(new MenuModel(0, getString(R.string.home_timeline), HomeTimelineFragment.class.getName(), null));
+        fregments.add(new MenuModel(1, getString(R.string.mentions), MentionFragment.class.getName(), null));
 
 
+        this.mAdapter = new MainAdapter(getSupportFragmentManager(), this, fregments);
 
-        if (mContent == null) {
-            mContent = Fragment.instantiate(this, HomeTimelineFragment.class.getName(), null);
-            mFragments.put(getString(R.string.home_timeline), mContent);
+        this.mViewPager.setAdapter(this.mAdapter);
 
-        }
+        this.mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+            }
 
-        setContentView(R.layout.main);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_content, mContent)
-                .commit();
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+                        break;
+                    default:
+                        getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+            }
+        });
+
         setBehindContentView(R.layout.menu_frame);
+        Bundle bundle  = new Bundle();
+        bundle.putParcelableArrayList(Constants.KEY_MENULIST, (ArrayList<? extends Parcelable>) fregments);
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.menu_frame, Fragment.instantiate(this, MenuFragment.class.getName()))
+                .replace(R.id.menu_frame, Fragment.instantiate(this, MenuFragment.class.getName(), bundle))
                 .commit();
 
         SlidingMenu slidingMenu = getSlidingMenu();
@@ -97,43 +124,24 @@ public class MainActivity extends SlidingFragmentActivity{
         mActionBar.setDisplayHomeAsUpEnabled(true);
 
 
+        if (savedInstanceState != null) {
 
-        setupView();
+                mViewPagerPostion = savedInstanceState.getInt(KEY_VIEWPAGER_POSITION, 0);
 
+        }
 
-
-        init();
-    }
-
-    private void setupView() {
-
-//        mViewPager = (ViewPager) findViewById(R.id.viewpager);
-//        mAdapter = new TabsAdapter(this, getSupportFragmentManager(), mActionBar, mViewPager);
-//        mViewPager.setAdapter(mAdapter);
-//        Bundle timelineBudle = new Bundle();
-//        timelineBudle.putInt(Constants.KEY_HOME_TAB_MODE, Constants.KEY_HOME_TAB_MODE_HOME_TIMELINE);
-//        mAdapter.addTab(TimeLineFragment.class, timelineBudle, getString(R.string.home_timeline), R.drawable.ic_tab_home);
-//
-//        Bundle mentionBundle = new Bundle();
-//        mentionBundle.putInt(Constants.KEY_HOME_TAB_MODE, Constants.KEY_HOME_TAB_MODE_METIONS);
-//        mAdapter.addTab(TimeLineFragment.class, mentionBundle, getString(R.string.mentions), R.drawable.ic_tab_mention);
+        mViewPager.setCurrentItem(mViewPagerPostion);
 
     }
-
-    private void init() {
-
-    }
-
-//    public void setCrouton(CharSequence text, Style style){
-//        Crouton.makeText(this, text, style).show();
-//    }
-
 
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        getSupportFragmentManager().putFragment(outState, "mContent", mContent);
+
+        if (outState != null) {
+            outState.putInt(KEY_VIEWPAGER_POSITION, mViewPagerPostion);
+        }
     }
 
     @Override
@@ -167,10 +175,6 @@ public class MainActivity extends SlidingFragmentActivity{
                 //TODO 登录成功
                 Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                 invalidateOptionsMenu();
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_content, mContent)
-                        .commit();
 
             } else {
                 //TODO 登录失败
@@ -185,19 +189,53 @@ public class MainActivity extends SlidingFragmentActivity{
         Crouton.cancelAllCroutons();
     }
 
-    public void switchContent(MenuModule menuModule) {
-        Fragment fragment = mFragments.get(menuModule.getTitle());
-        if (fragment == null) {
-            fragment = Fragment.instantiate(this, menuModule.getClsName(), menuModule.getBundle());
-            mFragments.put(menuModule.getTitle(), fragment);
-
-        }
+    public void switchContent(MenuModel menuModel) {
         getSlidingMenu().showContent();
-        mContent = fragment;
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment_content, mContent);
-        ft.commit();
+        mViewPager.setCurrentItem(menuModel.getId());
 
+    }
+
+    private class MainAdapter extends FragmentStatePagerAdapter {
+        private List<MenuModel> menuModels;
+        private Context context;
+
+        public MainAdapter(FragmentManager fm, Context context, List<MenuModel> models) {
+            super(fm);
+            this.menuModels = models;
+            this.context = context;
+        }
+
+        @Override
+        public Fragment getItem(int i) {
+            MenuModel model = menuModels.get(i);
+
+            return Fragment.instantiate(context, model.getClsName(), model.getBundle());
+        }
+
+        @Override
+        public int getCount() {
+            return menuModels.size();
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            super.destroyItem(container, position, object);
+        }
+
+        @Override
+        public void finishUpdate(ViewGroup container) {
+            super.finishUpdate(container);
+        }
+
+        @Override
+        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+            super.setPrimaryItem(container, position, object);
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return super.getItemPosition(object);
+        }
     }
 
 }

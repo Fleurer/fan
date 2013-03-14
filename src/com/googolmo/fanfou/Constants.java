@@ -17,6 +17,7 @@ public class Constants {
     public static final String KEY_HOME_TAB_MODE = "com.googolmo.fanfou.homemode";
 
     public static final String KEY_URL = "url";
+    public static final String KEY_MENULIST = "menu_list";
 
     public static final int KEY_HOME_TAB_MODE_HOME_TIMELINE = 1;
     public static final int KEY_HOME_TAB_MODE_METIONS = 2;

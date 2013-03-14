@@ -27,6 +27,8 @@ import com.googolmo.fanfou.loader.DBLoader;
 import com.googolmo.fanfou.loader.TimelineLoader;
 import com.googolmo.fanfou.utils.NLog;
 import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,7 @@ public class MentionFragment extends BaseListFragment implements LoaderManager.L
     private int scrolledIndex;
     private int scrolledTop;
     private String mCurrentUserId;
+    private Crouton crouton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -128,13 +131,14 @@ public class MentionFragment extends BaseListFragment implements LoaderManager.L
         }));
 
         setListShown(false);
-        getLoaderManager().initLoader(0, null, this).startLoading();
+
 
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(0, null, this);
         loadData();
     }
 
@@ -273,19 +277,24 @@ public class MentionFragment extends BaseListFragment implements LoaderManager.L
 //            return new TimelineLoader(getActivity(), getProvider(), getApi(), null);
 //        }
         else{
+            crouton = Crouton.makeText(getActivity(), R.string.now_loading, Style.INFO);
+            crouton.show();
             String sinceId = null;
             String maxId = null;
-            if (mLoadIndex == 0) {
-                if (mStatuses.size() > mLoadIndex) {
-                    sinceId = mStatuses.get(mLoadIndex).getId();
-                }
+            if (mStatuses != null && mStatuses.size() > 0) {
+                if (mLoadIndex == 0) {
+                    if (mStatuses.size() > mLoadIndex) {
+                        sinceId = mStatuses.get(mLoadIndex).getId();
+                    }
 
-            } else if (mLoadIndex == mStatuses.size() - 1) {
-                maxId = mStatuses.get(mLoadIndex).getId();
-            } else {
-                maxId = mStatuses.get(mLoadIndex - 1).getId();
-                sinceId = mStatuses.get(mLoadIndex + 1).getId();
+                } else if (mLoadIndex == mStatuses.size() - 1) {
+                    maxId = mStatuses.get(mLoadIndex).getId();
+                } else {
+                    maxId = mStatuses.get(mLoadIndex - 1).getId();
+                    sinceId = mStatuses.get(mLoadIndex + 1).getId();
+                }
             }
+
             return new TimelineLoader(getActivity(), getProvider(), getApi(), null, sinceId
                     , maxId, mProvider.getLoadCount(), 0, mStatuses, DB.STATUS_TYPE_MENTIONS);
         }
@@ -301,7 +310,7 @@ public class MentionFragment extends BaseListFragment implements LoaderManager.L
         if (listLoader.getId() == 0) {
             if (statuses.size() < 1) {
                 isShow = false;
-                getLoaderManager().restartLoader(1, null, this);
+                getLoaderManager().restartLoader(1, null, this).forceLoad();
             } else {
                 this.mStatuses.clear();
 
@@ -317,6 +326,13 @@ public class MentionFragment extends BaseListFragment implements LoaderManager.L
             }
 
         } else if (listLoader.getId() == 1) {
+            if (statuses.size() > 0) {
+                crouton = Crouton.makeText(getActivity(), getActivity().getString(R.string.load_result, statuses.size()), Style.INFO);
+            } else {
+                crouton = Crouton.makeText(getActivity(), R.string.result_no_new_statuses, Style.INFO);
+            }
+
+            crouton.show();
             if (mLoadIndex == 0) {
                 newPosition = statuses.size() ;
                 if (statuses.size() < getProvider().getLoadCount()) {
@@ -416,7 +432,7 @@ public class MentionFragment extends BaseListFragment implements LoaderManager.L
 
     private void refresh(int index) {
         mLoadIndex = index;
-        getLoaderManager().restartLoader(1, null, this);
+        getLoaderManager().restartLoader(1, null, this).forceLoad();
     }
 
     private void refresh() {
@@ -431,7 +447,7 @@ public class MentionFragment extends BaseListFragment implements LoaderManager.L
         else {
             mLoadIndex = 0;
         }
-        getLoaderManager().restartLoader(1, null, this);
+        getLoaderManager().restartLoader(1, null, this).forceLoad();
     }
 
 
