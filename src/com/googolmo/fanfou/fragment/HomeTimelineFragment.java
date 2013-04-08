@@ -28,6 +28,7 @@ import com.googolmo.fanfou.data.DB;
 import com.googolmo.fanfou.loader.DBLoader;
 import com.googolmo.fanfou.loader.TimelineLoader;
 import com.googolmo.fanfou.utils.NLog;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -125,7 +126,7 @@ public class HomeTimelineFragment extends BaseListFragment implements LoaderMana
             }
         });
 
-        getListView().setOnScrollListener(new PauseOnScrollListener(true, true, new AbsListView.OnScrollListener() {
+        getListView().setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), true, true, new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {

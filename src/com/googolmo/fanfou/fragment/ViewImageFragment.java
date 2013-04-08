@@ -87,31 +87,31 @@ public class ViewImageFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
         DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .cacheInMemory(false)
-                .cacheOnDisc(true)
+                .cacheOnDisc()
                 .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
                 .delayBeforeLoading(0)
                 .build();
 
         ImageLoader.getInstance().displayImage(mUrl, mImageView, options, new ImageLoadingListener() {
+
             @Override
-            public void onLoadingStarted() {
+            public void onLoadingStarted(String s, View view) {
             }
 
             @Override
-            public void onLoadingFailed(FailReason failReason) {
+            public void onLoadingFailed(String s, View view, FailReason failReason) {
                 NLog.d(TAG, failReason.toString());
             }
 
             @Override
-            public void onLoadingComplete(Bitmap bitmap) {
+            public void onLoadingComplete(String s, View view, Bitmap bitmap) {
                 mProgressBar.setVisibility(View.GONE);
                 mImageView.setVisibility(View.VISIBLE);
                 mBitmap = bitmap;
             }
 
             @Override
-            public void onLoadingCancelled() {
+            public void onLoadingCancelled(String s, View view) {
             }
         });
     }
@@ -144,9 +144,9 @@ public class ViewImageFragment extends BaseFragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                File file = ImageLoader.getInstance().getImageFile(getSherlockActivity(), uri, bitmap);
+                File file = ImageLoader.getInstance().getDiscCache().get(uri);
                 String result = "failed";
-                File dir = new File(Environment.getExternalStorageDirectory() + File.separator + "Pictures" + File.separator + "Shmily");
+                File dir = new File(Environment.getExternalStorageDirectory() + File.separator + "Pictures" + File.separator + "FanXiao");
                 result = saveFileToMedia(getSherlockActivity(), file, dir, title, title);
                 if (result == null) {
                     result = "failed";

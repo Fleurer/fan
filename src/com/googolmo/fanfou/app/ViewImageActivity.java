@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.googolmo.fanfou.BaseActivity;
 import com.googolmo.fanfou.R;
 import com.googolmo.fanfou.fragment.ViewImageFragment;
@@ -17,6 +18,7 @@ public class ViewImageActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.act_base);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

@@ -37,11 +37,12 @@ public class TimelineAdapter extends BaseAdapter{
         this.context = context;
         this.statuses = statuses;
         headerOptions = new DisplayImageOptions.Builder()
-                .resetViewBeforeLoading(true)
+                .resetViewBeforeLoading()
                 .showStubImage(R.drawable.ic_header_default)
                 .showImageForEmptyUri(R.drawable.ic_header_default)
-                .cacheInMemory(true)
-                .cacheOnDisc(true)
+                .showImageOnFail(R.drawable.ic_header_default)
+                .cacheInMemory()
+                .cacheOnDisc()
                 .bitmapConfig(Bitmap.Config.ARGB_8888)
                 .build();
     }

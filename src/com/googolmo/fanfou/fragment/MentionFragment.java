@@ -26,6 +26,7 @@ import com.googolmo.fanfou.data.DB;
 import com.googolmo.fanfou.loader.DBLoader;
 import com.googolmo.fanfou.loader.TimelineLoader;
 import com.googolmo.fanfou.utils.NLog;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -113,10 +114,10 @@ public class MentionFragment extends BaseListFragment implements LoaderManager.L
             }
         });
 
-        getListView().setOnScrollListener(new PauseOnScrollListener(true, true, new AbsListView.OnScrollListener() {
+        getListView().setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), true, true, new AbsListView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+                if (i == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
                     scrolledIndex = getListView().getFirstVisiblePosition();
                     View v = getListView().getChildAt(0);
                     scrolledTop = (v == null) ? 0 : v.getTop();

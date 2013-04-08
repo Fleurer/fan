@@ -99,22 +99,16 @@
             <type>apklib</type>
         </dependency>
         <dependency>
-            <groupId>com.d.imageloader</groupId>
-            <artifactId>loader</artifactId>
-            <version>${imageloader.version}</version>
+            <groupId>com.nostra13.universalimageloader</groupId>
+            <artifactId>universal-image-loader</artifactId>
+            <version>1.8.3</version>
         </dependency>
         <dependency>
-            <groupId>com.slidingmenu</groupId>
+            <groupId>com.mo.slidingmenu</groupId>
             <artifactId>librarywithsherlock</artifactId>
-            <version>1.0.2.1-SNAPSHOT</version>
+            <version>1.3-SNAPSHOT</version>
             <type>apklib</type>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.koushikdutta.widgets</groupId>-->
-            <!--<artifactId>widget</artifactId>-->
-            <!--<version>1.0.0</version>-->
-            <!--<type>apklib</type>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
